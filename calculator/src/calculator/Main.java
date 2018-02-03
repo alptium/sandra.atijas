@@ -1,4 +1,4 @@
-package caluclator;
+package calculator;
 import java.util.Scanner;
 
 public class Main {
@@ -32,14 +32,14 @@ public class Main {
 		}
 
 		switch (op) {
-        case "+":  c = a + b;
-                 break;
-        case "-":   c = a - b;
-        		break;
-        case "*":   c = a * b;
-				break;
-        case "/":   c = a / b;
-			    break;
+        	case "+":	c = a + b;
+            			break;
+        	case "-":   c = a - b;
+        				break;
+        	case "*":   c = a * b;
+						break;
+        	case "/":   c = a / b;
+			    		break;
 		} 
 		
 		System.out.println("First number is: " + a);
