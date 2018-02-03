@@ -29,22 +29,22 @@ public class Main {
 				System.out.println("Write again enter your second number: ");
 	
 				b = sc.nextInt();
-		}
+			}
 
-		switch (op) {
-        	case "+":	c = a + b;
+			switch (op) {
+        		case "+":	c = a + b;
             			break;
-        	case "-":   c = a - b;
+        		case "-":   c = a - b;
         				break;
-        	case "*":   c = a * b;
+        		case "*":   c = a * b;
 						break;
-        	case "/":   c = a / b;
+        		case "/":   c = a / b;
 			    		break;
-		} 
+			} 
 		
-		System.out.println("First number is: " + a);
-		System.out.println("Second number is: " + b);
-		System.out.println("The result is: " + c);
+			System.out.println("First number is: " + a);
+			System.out.println("Second number is: " + b);
+			System.out.println("The result is: " + c);
 		}		
 	}
 
