@@ -10,7 +10,7 @@ public class Main {
 		int c = 0;
 		
 		try(Scanner sc = new Scanner(System.in)) { 
-		
+			
 			System.out.println("Enter your first number: ");
 			
 			a = sc.nextInt();
@@ -23,23 +23,25 @@ public class Main {
 			
 			String op = sc.next();
 			
-			if (op.equals("/") && b == 0) {
+			if (op.equals("/") && b == 0) {				
 				
 				System.out.println("You cannot divide with 0.");
+			
 				System.out.println("Write again enter your second number: ");
 	
 				b = sc.nextInt();
-			}
-
+				}
+			
 			switch (op) {
-        		case "+": c = a + b;
-            			  break;
+			
+				case "+": c = a + b;
+						break;
         		case "-": c = a - b;
-        				  break;
+        				break;
         		case "*": c = a * b;
-						  break;
+        				break;
         		case "/": c = a / b;
-			    		  break;
+        				break;
 			} 
 		
 			System.out.println("First number is: " + a);
