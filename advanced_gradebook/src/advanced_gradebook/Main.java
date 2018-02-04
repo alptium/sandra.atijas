@@ -10,6 +10,7 @@ public class Main {
 		int[] grades; 
 		int totalNumberofStudents = 0;
 		int totalGrade = 0;
+		double avgGrade = 0.0;
 		
 		try(Scanner sc = new Scanner(System.in)) {	 
 			
@@ -35,6 +36,28 @@ public class Main {
 			
 			System.out.println("Total grade of all students is " + totalGrade);
 			
+			System.out.println("Number of all students is " + totalNumberofStudents);
+			
+			avgGrade = (double)totalGrade/(double)totalNumberofStudents;
+			System.out.println("Average grade of all students is " + avgGrade);
+			
+			//Minimal i maximal grade of all students
+			int minGrade = grades[0];
+			int maxGrade = grades[0];
+			
+			for(int i = 1 ; i < grades.length ; i++){
+				
+				if (grades[i] < minGrade) {
+					minGrade = grades[i];
+				}
+				
+				if (grades[i] > maxGrade) {
+					maxGrade = grades[i];
+				}		
+			}
+			
+			System.out.println("Minimal grade of all students is " + minGrade);
+			System.out.println("Maximal grade of all students is " + maxGrade);
 				
 		}
 
