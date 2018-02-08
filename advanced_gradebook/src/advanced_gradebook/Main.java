@@ -6,7 +6,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		String[] students;
+		String[][] students;
 		int[] grades; 
 		int totalNumberofStudents = 0;
 		int totalGrade = 0;
@@ -17,20 +17,26 @@ public class Main {
 			System.out.println("Enter the number of students in your class: ");
 			totalNumberofStudents = sc.nextInt();
 			
-			students = new String[totalNumberofStudents];
+			students = new String[totalNumberofStudents][2]; //second dimension = 2 -> first and last name
 			grades = new int[totalNumberofStudents];
 			
 			for(int i = 0 ; i < totalNumberofStudents ; i++){ 
 				
 				int j = i+1;
-				System.out.println("Enter the name and surname of your " + j + ". student and his grade: ");
-				students[i] = sc.next();
+				System.out.println("Enter the name of your " + j + ". student: ");
+				students[i][0] = sc.next();
+				
+				System.out.println("Enter the surname of your " + j + ". student: ");
+				students[i][1] = sc.next();
+				
+				System.out.println("Enter his grade: ");
 				grades[i]= sc.nextInt();
 			}
 			
-			for(int i = 0 ; i < totalNumberofStudents ; i++){ 
+			
+			for(int i = 0 ; i < totalNumberofStudents; i++){ 
 				
-				System.out.println("Student " + students[i] + " has grade " + grades[i]);
+				System.out.println("Student " + students[i][0] + " " + students[i][1] + " has grade " + grades[i]);
 				totalGrade += grades[i];
 			}
 			
@@ -38,8 +44,9 @@ public class Main {
 			
 			System.out.println("Number of all students is " + totalNumberofStudents);
 			
-			avgGrade = (double)totalGrade/(double)totalNumberofStudents;
-			System.out.println("Average grade of all students is " + avgGrade);
+			avgGrade = (double)totalGrade/totalNumberofStudents;
+					
+			System.out.println("Average grade of all students is " + String.format("%.2g%n", avgGrade));
 			
 			//Minimal i maximal grade of all students
 			int minGrade = grades[0];
