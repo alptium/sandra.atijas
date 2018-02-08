@@ -14,8 +14,23 @@ public class Main {
 		
 		try(Scanner sc = new Scanner(System.in)) {	 
 			
-			System.out.println("Enter the number of students in your class: ");
-			totalNumberofStudents = sc.nextInt();
+			//Number of students needs to be grater than 0
+			while (totalNumberofStudents <= 0) {
+				try {
+					
+					System.out.println("Please enter the number of students in your class: ");
+					totalNumberofStudents = sc.nextInt();
+					
+					if (totalNumberofStudents < 0) {
+						System.out.println("The number of students has to be positive number!");
+					}
+				} 
+				catch (Exception e) {
+					System.out.println("The number of students cannot be a string!");
+					sc.next(); // for not having endless loop
+				}
+				
+			}
 			
 			students = new String[totalNumberofStudents][2]; //second dimension = 2 -> first and last name
 			grades = new int[totalNumberofStudents];
@@ -29,10 +44,20 @@ public class Main {
 				System.out.println("Enter the surname of your " + j + ". student: ");
 				students[i][1] = sc.next();
 				
-				System.out.println("Enter his grade: ");
-				grades[i]= sc.nextInt();
+				boolean isGradeValid = false;
+				
+				while (!isGradeValid) {
+					try {
+						System.out.println("Enter the grade: ");
+						grades[i]= sc.nextInt();
+						isGradeValid = true;
+					} 
+					catch (Exception e) {
+						System.out.println("You have to write number!");
+						sc.next(); // for not having endless loop
+					}
+				} 
 			}
-			
 			
 			for(int i = 0 ; i < totalNumberofStudents; i++){ 
 				
@@ -69,5 +94,5 @@ public class Main {
 		}
 
 	}
-
+	
 }
