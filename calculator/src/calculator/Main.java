@@ -30,10 +30,9 @@ public class Main {
 				System.out.println("Write again enter your second number: ");
 	
 				b = sc.nextInt();
-				}
+			}
 			
 			switch (op) {
-			
 				case "+": c = a + b;
 						break;
         		case "-": c = a - b;
