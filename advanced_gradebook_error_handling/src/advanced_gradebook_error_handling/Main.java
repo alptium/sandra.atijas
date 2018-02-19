@@ -1,4 +1,4 @@
-package advanced_gradebook;
+package advanced_gradebook_error_handling;
 
 import java.util.Scanner;
 import java.util.logging.*;
@@ -19,13 +19,30 @@ public class Main {
 		logger.info("Logger name: " + logger.getName()); //name of a LOGGER
 		
 		try(Scanner sc = new Scanner(System.in)) {	 
+			
+			while (true) {
 				
 				totalNumberofStudents = 0;
 				//Number of students needs to be grater than 0
-				System.out.println("Please enter the number of students in your class: ");
+				while (totalNumberofStudents <= 0) {
+					try {
+						
+						System.out.println("Please enter the number of students in your class: ");
+						totalNumberofStudents = sc.nextInt();
+						
+						if (totalNumberofStudents < 0) {
+							System.out.println("The number of students has to be positive number!");
+						}
+					} 
+					catch (Exception e) {
+						System.out.println("The number of students cannot be a string!");
+						//logger.log(Level.WARNING, "The number of students cannot be a string!" );
+						//logger.log(Level.SEVERE,"Exception occur", e); //logging of excepiton
+						sc.next(); // for not having endless loop
+					}
+					
+				}
 				
-				totalNumberofStudents = sc.nextInt();
-		
 				students = new String[totalNumberofStudents][2]; //second dimension = 2 -> first and last name
 				grades = new int[totalNumberofStudents];
 				
@@ -38,11 +55,21 @@ public class Main {
 					System.out.println("Enter the surname of your " + j + ". student: ");
 					students[i][1] = sc.next();
 					
-					System.out.println("Enter the grade: ");
-					 grades[i]= sc.nextInt();
+					boolean isGradeValid = false;
+					
+					while (!isGradeValid) {
+						try {
+							System.out.println("Enter the grade: ");
+							grades[i]= sc.nextInt();
+							isGradeValid = true;
+						} 
+						catch (Exception e) {
+							System.out.println("You have to write number!");
+							sc.next(); // for not having endless loop
+						}
+					} 
 				}
-	
-			
+				
 				for(int i = 0 ; i < totalNumberofStudents; i++){ 
 					
 					System.out.println("Student " + students[i][0] + " " + students[i][1] + " has grade " + grades[i]);
@@ -87,6 +114,8 @@ public class Main {
 			}
 
 		}
+		
+	}
 			
 			
 }

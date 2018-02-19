@@ -1,0 +1,8 @@
+Student a 2 has grade 3
+Total grade of all students is 3
+Number of all students is 1
+Average grade of all students is 3.0
+
+Minimal grade of all students is 3
+Maximal grade of all students is 3
+
