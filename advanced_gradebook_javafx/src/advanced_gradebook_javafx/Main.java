@@ -74,13 +74,7 @@ public class Main extends Application {
         
         btEnterNum.setOnAction(e -> getNumberOfStudents()); //On click it will call a method getArraySize
         btNextStudent.setOnAction(e -> addStudentData());
-       /* btRunReport.setOnAction(e -> {
-			try {
-				studentsReport();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		});*/
+        btRunReport.setOnAction(e -> studentsReport());
         btQuit.setOnAction(e -> quitApplication()); //On click it will call a method quitApplication
 	
 		
