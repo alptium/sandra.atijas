@@ -31,11 +31,11 @@ public class Main {
 						totalNumberofStudents = sc.nextInt();
 						
 						if (totalNumberofStudents < 0) {
-							System.out.println("The number of students has to be positive number!");
+							System.out.println("The number of students needs to be a positive number.");
 						}
 					} 
 					catch (Exception e) {
-						System.out.println("The number of students cannot be a string!");
+						System.out.println("The number of students needs to be a positive number.");
 						//logger.log(Level.WARNING, "The number of students cannot be a string!" );
 						//logger.log(Level.SEVERE,"Exception occur", e); //logging of excepiton
 						sc.next(); // for not having endless loop
@@ -59,12 +59,23 @@ public class Main {
 					
 					while (!isGradeValid) {
 						try {
-							System.out.println("Enter the grade: ");
-							grades[i]= sc.nextInt();
+							
+							grades[i] = 0;
+
+							while (grades[i] <= 0) {
+								
+								System.out.println("Enter the grade: ");
+								grades[i]= sc.nextInt();
+								
+								if (grades[i] < 0) {
+									System.out.println("The student's grade has to be a positive number.");
+								}	
+							}
+							
 							isGradeValid = true;
 						} 
 						catch (Exception e) {
-							System.out.println("You have to write number!");
+							System.out.println("You have to write number.");
 							sc.next(); // for not having endless loop
 						}
 					} 
