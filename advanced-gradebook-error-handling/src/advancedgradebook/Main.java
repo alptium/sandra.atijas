@@ -1,4 +1,4 @@
-package advanced_gradebook;
+package advancedgradebook;
 
 import java.util.Scanner;
 import java.util.logging.*;
@@ -18,13 +18,30 @@ public class Main {
 		logger.info("Logger name: " + logger.getName()); //name of a LOGGER
 		
 		try(Scanner sc = new Scanner(System.in)) {	 
+			
+			while (true) {
 				
 				int totalNumberStudents = 0;
 				//Number of students needs to be grater than 0
-				System.out.println("Please enter the number of students in your class: ");
+				while (totalNumberStudents <= 0) {
+					try {
+						
+						System.out.println("Please enter the number of students in your class: ");
+						totalNumberStudents = sc.nextInt();
+						
+						if (totalNumberStudents < 0) {
+							System.out.println("The number of students needs to be a positive number.");
+						}
+					} 
+					catch (Exception e) {
+						System.out.println("The number of students needs to be a positive number.");
+						//logger.log(Level.WARNING, "The number of students cannot be a string!" );
+						//logger.log(Level.SEVERE,"Exception occur", e); //logging of excepiton
+						sc.next(); // for not having endless loop
+					}
+					
+				}
 				
-				totalNumberStudents = sc.nextInt();
-		
 				students = new String[totalNumberStudents][2]; //second dimension = 2 -> first and last name
 				grades = new int[totalNumberStudents];
 				
@@ -37,11 +54,32 @@ public class Main {
 					System.out.println("Enter the surname of your " + j + ". student: ");
 					students[i][1] = sc.next();
 					
-					System.out.println("Enter the grade: ");
-					grades[i]= sc.nextInt();
+					boolean isGradeValid = false;
+					
+					while (!isGradeValid) {
+						try {
+							
+							grades[i] = 0;
+
+							while (grades[i] <= 0) {
+								
+								System.out.println("Enter the grade: ");
+								grades[i]= sc.nextInt();
+								
+								if (grades[i] < 0) {
+									System.out.println("The student's grade has to be a positive number.");
+								}	
+							}
+							
+							isGradeValid = true;
+						} 
+						catch (Exception e) {
+							System.out.println("You have to write number.");
+							sc.next(); // for not having endless loop
+						}
+					} 
 				}
-	
-			
+				
 				for(int i = 0 ; i < totalNumberStudents; i++){ 
 					
 					System.out.println("Student " + students[i][0] + " " + students[i][1] + " has grade " + grades[i]);
@@ -86,6 +124,8 @@ public class Main {
 			}
 
 		}
+		
+	}
 			
 			
 }
