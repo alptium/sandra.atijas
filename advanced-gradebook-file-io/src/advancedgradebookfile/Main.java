@@ -141,8 +141,6 @@ public static void main(String[] args) throws IOException {
 					bw.write("Maximal grade of all students is " + maxGrade);
 					bw.newLine();
 					
-					System.out.println("Done!");
-					
 					fr = new FileReader(file);
 					br = new BufferedReader(fr);
 					sCurrentLine = null;
