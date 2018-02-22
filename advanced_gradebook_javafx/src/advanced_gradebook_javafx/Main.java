@@ -21,17 +21,23 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 	
-	private TextField tfNumOfStudents = new TextField();
+	private TextField tfNumStudents = new TextField();
 	private TextField tfStundetFirstName = new TextField();
     private TextField tfStudentLastName = new TextField();
     private TextField tfStudentGrade = new TextField();
 	
 	Label lb = new Label();
-	int totalNumberofStudents = 0;
-	String[][] students; 
+	Label lb_max = new Label();
+	Label lb_min = new Label();
+	Label lb_avgGrade = new Label();
+	GridPane gridPaneReport = new GridPane();
+	int totalNumberStudents = 0;
+	String[] names;
+	String[] surnames;
 	int[] grades; 
 	int totalGrade = 0;
 	double avgGrade = 0.0;
+	int i = 0;
 	
 	private Button btEnterNum = new Button("Submit");
 	private Button btNextStudent = new Button("Add Student");
@@ -46,13 +52,13 @@ public class Main extends Application {
 	public void start(Stage stage) throws Exception {
 		
 		//Create the UI
-        GridPane gridPane =new GridPane();
+        GridPane gridPane = new GridPane();
      
         gridPane.setVgap(15); //distance between objects vertically
         gridPane.setHgap(10); //distance between objects horizontally
         
         gridPane.add(new Label("Enter the Number of Students: "), 0, 0); // column=0 row=0
-        gridPane.add(tfNumOfStudents,1 ,0);
+        gridPane.add(tfNumStudents,1 ,0);
         
         gridPane.add(btEnterNum, 2, 0);
 
@@ -70,82 +76,108 @@ public class Main extends Application {
         tfStundetFirstName.setAlignment(Pos.BOTTOM_RIGHT);
         tfStudentLastName.setAlignment(Pos.BOTTOM_RIGHT);
         gridPane.add(btRunReport, 1, 6);
-        gridPane.add(lb, 1, 7);
+        gridPane.add(lb, 0, 7);
+        gridPane.add (gridPaneReport, 0, 8);
+        gridPane.add(lb_max, 0, 9);
+        gridPane.add(lb_min, 0, 10);
+        gridPane.add(lb_avgGrade, 0, 11);
         
         btEnterNum.setOnAction(e -> getNumberOfStudents()); //On click it will call a method getArraySize
+        
         btNextStudent.setOnAction(e -> addStudentData());
+        
         btRunReport.setOnAction(e -> studentsReport());
+        
         btQuit.setOnAction(e -> quitApplication()); //On click it will call a method quitApplication
-	
-		
-		Scene scene = new Scene(gridPane,500, 500);
+        
+    	Scene scene = new Scene(gridPane,500, 500);
 		stage.setTitle("Advanced gradebook"); // Set title
 		
 		stage.setScene(scene);
 		stage.show();
-
 		
 	}
 	
 	
 	public void getNumberOfStudents() {
 		try {
-			totalNumberofStudents = Integer.parseInt(tfNumOfStudents.getText());
-			students = new String[totalNumberofStudents][2];
-			grades = new int[totalNumberofStudents];
-			lb.setText(Integer.toString(totalNumberofStudents));
+			
+			totalNumberStudents = Integer.parseInt(tfNumStudents.getText());
+			names = new String[totalNumberStudents];
+			surnames = new String[totalNumberStudents];
+			grades = new int[totalNumberStudents];
+
+			lb.setText("Number of students is " + Integer.toString(totalNumberStudents));
 		} 
 		catch (Exception e) {
 			Alert alert = new Alert(Alert.AlertType.WARNING);
 	        alert.setTitle("Warning");
-	        alert.setHeaderText("Enter Values");
-	        alert.setContentText("You have to enter Integer Numbers");
+	        alert.setHeaderText("Invalid Values");
+	        alert.setContentText("You need to enter posstive Integer number.");
 	        alert.showAndWait();
 			}
     }
 	
 	public void addStudentData(){
-		 
-		 for(int i = 0 ; i < totalNumberofStudents; i++){
+		
+		if (i < totalNumberStudents) {
+			
+			names[i] = tfStundetFirstName.getText();
+			surnames[i] = tfStudentLastName.getText();
+            int tmpGrades = 0;
             
-			students[i][0] = tfStundetFirstName.getText();
-			students[i][1] = tfStudentLastName.getText();
-            grades[i] = Integer.parseInt(tfStudentGrade.getText());
-		 }  
-		// btNextStudent.setDisable(true);
-		 
-		 tfStundetFirstName.clear();
-		 tfStudentLastName.clear();
-		 tfStudentGrade.clear();
+            try {	
+            	tmpGrades = Integer.parseInt(tfStudentGrade.getText());
+            	
+            	if (tmpGrades < 0) {
+            		Alert alert = new Alert(Alert.AlertType.WARNING);
+            		alert.setTitle("Warning");
+					alert.setHeaderText("Invalid Values");
+					alert.setContentText("The student's grade has to be a positive number.");
+					alert.showAndWait();
+					}	
+            	else {
+                	grades[i] = tmpGrades;
+                    i++;
+            	}
+                
+            } 
+            catch (Exception e) {	
+            	Alert alert = new Alert(Alert.AlertType.WARNING);
+			    alert.setTitle("Warning");
+			    alert.setHeaderText("Invalid Values");
+			    alert.setContentText("The student's grade has to be a positive number...");
+			    alert.showAndWait();
+			}
+            
+			tfStundetFirstName.clear();
+			tfStudentLastName.clear();
+			tfStudentGrade.clear();
+			
+		}
+		
+		if (i == totalNumberStudents )
+			btNextStudent.setDisable(true);
 	}
 	
 	
 	public void studentsReport() {
 		
-	    for(int i = 0 ; i < totalNumberofStudents ; i++){
-	    	for (int j = 0; j < 2; i++) {
-	    		Label lb_students = new Label();
-	    		lb_students.setText("********");
-	    		lb_students.setText(students[i][j]);
-	    	//lb_students[i].setText("Student " + students[i][0] + " " + students[i][1] + " has grade " + grades[i]);
-			//totalGrade += grades[i];
-	    	}
+	    for(int i = 0 ; i < totalNumberStudents; i++){
+	    		
+	    		gridPaneReport.add(new Label(names[i] + " " + surnames[i] + " has grade " + Integer.toString(grades[i])),0, i);
+	    		totalGrade += grades[i];
 		}
 		
-	 //   empPayroll.println("Total grade of all students is " + totalGrade);
+		avgGrade = (double)totalGrade/totalNumberStudents;
 		
-	   // empPayroll.println("Number of all students is " + totalNumberofStudents);
-		
-		avgGrade = (double)totalGrade/totalNumberofStudents;
-				
-		//empPayroll.println("Average grade of all students is " + String.format("%.2g%n", avgGrade));
-		
+		lb_avgGrade.setText("Average grade is " + Double.toString(avgGrade));
 		
 		//Minimal i maximal grade of all students
 		int minGrade = grades[0];
 		int maxGrade = grades[0];
 		
-		for(int i = 0 ; i < grades.length ; i++){
+		for(int i = 0 ; i < grades.length; i++){
 			
 			if (grades[i] < minGrade) {
 				minGrade = grades[i];
@@ -155,9 +187,10 @@ public class Main extends Application {
 				maxGrade = grades[i];
 			}		
 		}
-		             
-		//empPayroll.println("Minimal grade of all students is " + minGrade);
-		//empPayroll.println("Maximal grade of all students is " + maxGrade + "\n")
+		
+		lb_max.setText("Maximal grade is: " + Integer.toString(maxGrade));
+		lb_min.setText("Minimal grade is: " + Integer.toString(minGrade));
+
 	}
 	 
 	
