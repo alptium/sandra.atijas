@@ -52,7 +52,7 @@ public class Main  {
 					System.out.println("4. question: Enter number of teams that you have played before?");
 					lstAnswers.add(sc.nextInt());
 					
-					System.out.println("5. question: Do you have some healthProblems (Y/N)?");
+					System.out.println("5. question: Do you have some health problems (Y/N)?");
 					lstAnswers.add(sc.next());
 					
 					System.out.println("6. question: Are you smoker (Y/N)?");
