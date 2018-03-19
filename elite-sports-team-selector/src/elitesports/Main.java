@@ -82,12 +82,11 @@ public class Main  {
 					if ((int)lstAnswers.get(0) > minAge && (int)lstAnswers.get(3) >= minTeams) {
 						
 						// Candidate cannot have health problems, need t have sport's spirit, to focus even with presure, to share statistics with teammates
-						if (
-							(lstAnswers.get(4).equals("N") || lstAnswers.get(4).equals("n")) && 	
-						    (lstAnswers.get(6).equals("Y") || lstAnswers.get(6).equals("y")) &&
-							(lstAnswers.get(7).equals("C") || lstAnswers.get(7).equals("SG") || lstAnswers.get(7).equals("c") || lstAnswers.get(7).equals("sg")) &&
-						    (lstAnswers.get(8).equals("Y") || lstAnswers.get(8).equals("y")) &&
-							(lstAnswers.get(9).equals("Y") || lstAnswers.get(9).equals("y"))
+						if (((String) lstAnswers.get(4)).equalsIgnoreCase("N") && 	
+						    ((String) lstAnswers.get(6)).equalsIgnoreCase("Y") &&
+							(((String) lstAnswers.get(7)).equalsIgnoreCase("C") || ((String) lstAnswers.get(7)).equalsIgnoreCase("SG")) &&
+						    ((String) lstAnswers.get(8)).equalsIgnoreCase("Y") &&
+							((String) lstAnswers.get(9)).equalsIgnoreCase("Y")
 							) {
 							status = "Accepted";
 	
@@ -97,21 +96,17 @@ public class Main  {
 						
 				}		
 				
-				for (int j = 0; j<listStatuses.length; j++) {
+				for (int j = 0; j<listStatuses.length; j++){
 					System.out.println(listStatuses[j]);
 				}
 				
-
 				System.out.println("Do you want to quit the program? Y/N ");
 				toQuit = sc.next().charAt(0);
 				
 				if (toQuit ==  'Y' || toQuit == 'y') {
 					System.exit(0);
-				}
-				
+				}	
 			}
-			
-			
 		}
 				
 	}
