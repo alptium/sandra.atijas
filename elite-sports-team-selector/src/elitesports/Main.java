@@ -11,7 +11,10 @@ public class Main  {
 		
 		String[] candidates_names;
 		String[] candidates_surnames;
-		List<Object> lstAnswers = new ArrayList<Object>();
+		double[] candidates_ages;
+		double[] candidates_height;
+		double[] candidates_weight;
+		List<String> lstAnswers = new ArrayList<String>();
 		int totalNumberCandidates = 0;
 		
 		int minAge = 20;
@@ -24,6 +27,10 @@ public class Main  {
 			
 			candidates_names = new String[totalNumberCandidates];
 			candidates_surnames = new String[totalNumberCandidates];
+			candidates_ages = new double[totalNumberCandidates];
+			candidates_height = new double[totalNumberCandidates];
+			candidates_weight = new double[totalNumberCandidates];
+			
 			String[] listStatuses = new String[totalNumberCandidates];
 			char toQuit = 'N';
 			
@@ -41,16 +48,16 @@ public class Main  {
 					candidates_surnames[i] = sc.next();
 					
 					System.out.println("1. question: Enter your age?");
-					lstAnswers.add(sc.nextInt());
+					candidates_ages[i]= sc.nextDouble();
 					
 					System.out.println("2. question: Enter your height (in cm)?");
-					lstAnswers.add(sc.nextDouble());
+					candidates_height[i]= sc.nextDouble();
 					
 					System.out.println("3. question: Enter your weight (in kg)?");
-					lstAnswers.add(sc.nextDouble());
+					candidates_weight[i]= sc.nextDouble();
 					
-					System.out.println("4. question: Enter number of teams that you have played before?");
-					lstAnswers.add(sc.nextInt());
+					System.out.println("4. question: Did you play in more than 2 teams before?");
+					lstAnswers.add(sc.next());
 					
 					System.out.println("5. question: Do you have some health problems (Y/N)?");
 					lstAnswers.add(sc.next());
@@ -73,23 +80,26 @@ public class Main  {
 					lstAnswers.add(sc.next());
 					
 					System.out.println("===========" + candidates_names[i] + " " +  candidates_surnames[i] + "===========");
+					System.out.println("Age:" + candidates_ages[i]); 
+					System.out.println("Height:" + candidates_height[i]); 
+					System.out.println("Weight:" + candidates_weight[i]); 
 					for (int j = 0; j < lstAnswers.size(); j++) {
 						System.out.println(lstAnswers.get(j));
 					}
 					
 					
 					// Candidate needs to be older than minAge and already played somewhere
-					if ((int)lstAnswers.get(0) > minAge && (int)lstAnswers.get(3) >= minTeams) {
-						
-						// Candidate cannot have health problems, need t have sport's spirit, to focus even with presure, to share statistics with teammates
-						if (((String) lstAnswers.get(4)).equalsIgnoreCase("N") && 	
-						    ((String) lstAnswers.get(6)).equalsIgnoreCase("Y") &&
-							(((String) lstAnswers.get(7)).equalsIgnoreCase("C") || ((String) lstAnswers.get(7)).equalsIgnoreCase("SG")) &&
-						    ((String) lstAnswers.get(8)).equalsIgnoreCase("Y") &&
-							((String) lstAnswers.get(9)).equalsIgnoreCase("Y")
-							) {
-							status = "Accepted";
+					if (candidates_ages[i] > minAge && lstAnswers.get(0).equalsIgnoreCase("Y")) {
 	
+						// Candidate cannot have health problems, need t have sport's spirit, to focus even with preasure, to share statistics with teammates
+						if (
+						   lstAnswers.get(1).equalsIgnoreCase("N") && lstAnswers.get(3).equalsIgnoreCase("Y") &&
+						   lstAnswers.get(6).equalsIgnoreCase("Y") && lstAnswers.get(5).equalsIgnoreCase("Y") &&
+							((lstAnswers.get(4)).equalsIgnoreCase("C") || (lstAnswers.get(4)).equalsIgnoreCase("SG"))
+							) 
+						    {
+							
+							status = "Accepted";
 						}
 					}
 					listStatuses[i] = candidates_names[i] + " " +  candidates_surnames[i] + " with status " + status;
