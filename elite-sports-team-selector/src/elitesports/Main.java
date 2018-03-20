@@ -18,7 +18,6 @@ public class Main  {
 		int totalNumberCandidates = 0;
 		
 		int minAge = 20;
-		int minTeams = 2;
 		String status = "Rejected";
 	
 		try (Scanner sc = new Scanner(System.in)) {
