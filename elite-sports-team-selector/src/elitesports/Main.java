@@ -7,6 +7,8 @@ import java.util.Scanner;
 
 public class Main  {
 	
+	static final int minAge = 20;
+	
 	public static void main(String[] args) throws IOException {
 		
 		String[] candidates_names;
@@ -16,9 +18,7 @@ public class Main  {
 		double[] candidates_weight;
 		List<String> lstAnswers = new ArrayList<String>();
 		int totalNumberCandidates = 0;
-		
-		int minAge = 20;
-		String status = "Rejected";
+		List<Candidate> lstCandidates = new ArrayList<Candidate>();
 	
 		try (Scanner sc = new Scanner(System.in)) {
 			System.out.println("Type the number of candidates who will do the questionaire?");
@@ -54,6 +54,10 @@ public class Main  {
 					
 					System.out.println("3. question: Enter your weight (in kg)?");
 					candidates_weight[i]= sc.nextDouble();
+
+					Candidate candidate = new Candidate(candidates_names[i], candidates_surnames[i], candidates_ages[i], candidates_weight[i], candidates_height[i]);
+					
+					lstCandidates.add(candidate);
 					
 					System.out.println("4. question: Did you play in more than 2 teams before?");
 					lstAnswers.add(sc.next());
@@ -81,14 +85,26 @@ public class Main  {
 					System.out.println("===========" + candidates_names[i] + " " +  candidates_surnames[i] + "===========");
 					System.out.println("Age:" + candidates_ages[i]); 
 					System.out.println("Height:" + candidates_height[i]); 
-					System.out.println("Weight:" + candidates_weight[i]); 
+					System.out.println("Weight:" + candidates_weight[i]);
+					
+					System.out.println("===========" + candidate.getName() + " " +  candidate.getSurname() + "===========");
+					System.out.println("Age:" + candidate.getAge()); 
+					System.out.println("Height:" + candidate.getHeight()); 
+					System.out.println("Weight:" + candidate.getWeight());
+					
 					for (int j = 0; j < lstAnswers.size(); j++) {
 						System.out.println(lstAnswers.get(j));
 					}
 					
 					
+					//listStatuses[i] = candidates_names[i] + " " +  candidates_surnames[i] + " with status " + calculateResult (candidate, lstAnswers);
+					
+					candidate.setStatus(calculateResult (candidate, lstAnswers));
+					
+					listStatuses[i] = candidate.getName() + " " +  candidate.getSurname() + " with status " + candidate.getStatus();
+					
 					// Candidate needs to be older than minAge and already played somewhere
-					if (candidates_ages[i] > minAge && lstAnswers.get(0).equalsIgnoreCase("Y")) {
+					/*if (candidates_ages[i] > minAge && lstAnswers.get(0).equalsIgnoreCase("Y")) {
 	
 						// Candidate cannot have health problems, need t have sport's spirit, to focus even with preasure, to share statistics with teammates
 						if (
@@ -100,9 +116,7 @@ public class Main  {
 							
 							status = "Accepted";
 						}
-					}
-					listStatuses[i] = candidates_names[i] + " " +  candidates_surnames[i] + " with status " + status;
-						
+					}*/	
 				}		
 				
 				for (int j = 0; j<listStatuses.length; j++){
@@ -119,6 +133,24 @@ public class Main  {
 		}
 				
 	}
+	
+	// here is applied the logic which candidate will be accepted or rejected
+	public static String calculateResult (Candidate candidate, List<String> answers) {
+		
+		String status = "Rejected";
+		if (candidate.getAge() > minAge && answers.get(0).equalsIgnoreCase("Y")) {
+			// Candidate cannot have health problems, need t have sport's spirit, to focus even with preasure, to share statistics with teammates
+			if (answers.get(1).equalsIgnoreCase("N") && answers.get(3).equalsIgnoreCase("Y") &&
+				answers.get(6).equalsIgnoreCase("Y") && answers.get(5).equalsIgnoreCase("Y") &&
+				((answers.get(4)).equalsIgnoreCase("C") || (answers.get(4)).equalsIgnoreCase("SG"))) {
+				
+				status = "Accepted";
+			}
+			
+		}
+			return status;
+			
+	} // end of method calculateResult
 	
 }
 
