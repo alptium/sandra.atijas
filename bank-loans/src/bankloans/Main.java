@@ -25,8 +25,8 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		
 		Applicant applicant  = new Applicant();
-		//BankPortfolio portfolio;
-		//Date now = new Date();
+		BankPortfolio portfolio = new BankPortfolio(null, null, null, null, null);
+		Date now = new Date();
 		
 		try (Scanner sc = new Scanner(System.in)) {
 		//We don't know in advance how many people there will be.
@@ -44,6 +44,9 @@ public class Main {
 				
 				System.out.println("Enter applicant's age?");
 				applicant.setAge(sc.nextInt());
+				
+				System.out.println("Enter applicant's JMBG?");
+				applicant.setJmbg(sc.next());
 				
 				System.out.println("Enter applicant's employment status:");
 				applicant.setEmployment_status(sc.next());
@@ -81,25 +84,28 @@ public class Main {
 					
 					Loan cashLoan = new CashLoan();
 					
-					applicant.setLoanAcceptance(cashLoan.calculateAcceptance(applicant));
-					//applicant.setTypeLoan("CASH LOAN");
+					cashLoan.settypeOfLoan("C");
 					
-					//portfolio = new BankPortfolio(applicant, cashLoan, now, "CASH CREDIT", applicant.loanAcceptance);
+					applicant.setLoanAcceptance(cashLoan.calculateAcceptance(applicant));
+					
+					portfolio = new BankPortfolio(applicant, cashLoan, now, cashLoan.gettypeOfLoan(), applicant.loanAcceptance);
 				}
 				
 				if (sc.next().equalsIgnoreCase("H")) {
 					
 					Loan housingLoan = new HousingLoan();
 					
-					applicant.setLoanAcceptance(housingLoan.calculateAcceptance(applicant));
-					//applicant.setTypeLoan("HOUSING LOAN");
+					housingLoan.settypeOfLoan("H");
 					
-					//portfolio = new BankPortfolio(applicant, housingLoan, now, "HOUSING CREDIT", applicant.loanAcceptance);
+					applicant.setLoanAcceptance(housingLoan.calculateAcceptance(applicant));
+					
+					portfolio = new BankPortfolio(applicant, housingLoan, now, housingLoan.gettypeOfLoan(), applicant.loanAcceptance);
 				}
 			
 				insertApplicants (applicant);
 				
-				//insertBankPortfolio(portfolio);
+				insertBankPortfolio(portfolio,applicant);
+				
 				readApplicants ();
 				
 				System.out.println("Do you want to quit the program? Y/N ");
@@ -155,7 +161,7 @@ public class Main {
 				System.out.println("Connection successful");
 				//2. Create a statement
 				//3. Execute SQL Query
-				String insertSQL = "INSERT INTO Applicant (name, surname, age, employment_status, salary, marital_status, loan_acceptance, n_family_members, contract_type, loan_type) "
+				String insertSQL = "INSERT INTO Applicant (name, surname, age, employment_status, salary, marital_status, loan_acceptance, n_family_members, jmbg) "
 						+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			    preparedStatement = conn.prepareStatement(insertSQL);
 			    preparedStatement.setString(1, applicant.getName());
@@ -167,6 +173,7 @@ public class Main {
 			    preparedStatement.setString(7, applicant.getLoanAcceptance());
 			    preparedStatement.setInt(8, applicant.getNumberFamilyMembers());
 			    //preparedStatement.setString(9, applicant.getContractType());
+			    preparedStatement.setString(9, applicant.getJmbg());
 			    preparedStatement.executeUpdate();
 			}
 			
@@ -198,7 +205,7 @@ public class Main {
 
 				statement = conn.createStatement();
 
-			    String sql = "SELECT name, surname, age, employment_status, salary, marital_status, loan_acceptance, n_family_members, contract_type  "
+			    String sql = "SELECT name, surname, age, employment_status, salary, marital_status, loan_acceptance, n_family_members, contract_type, jmbg  "
 			    		+ "FROM mydb.applicant ";
 			    rs = statement.executeQuery(sql);
 				
@@ -220,6 +227,8 @@ public class Main {
 	                System.out.println(rs.getInt(8));
 	                System.out.print(" ");
 	                System.out.println(rs.getString(9));
+	                System.out.print(" ");
+	                System.out.println(rs.getString(10));
 	            }
 				
 			}
@@ -246,12 +255,17 @@ public class Main {
 		
 	}
 	
-	/*========================================= METHODS FOR BANK PORTFOLIO ==============================================
+	/*========================================= METHODS FOR BANK PORTFOLIO ==============================================*/
 	
-	public static void insertBankPortfolio (BankPortfolio portfolio) {
+	public static void insertBankPortfolio (BankPortfolio portfolio, Applicant applicant) {
 		
 		Connection conn = getConnection(); 
 		PreparedStatement preparedStatement = null;	
+		Statement statement = null;	
+		ResultSet rs = null;
+		
+		String jmbg = applicant.getJmbg();
+		int id_applicant = -1;
 		
 		try {
 			
@@ -259,12 +273,25 @@ public class Main {
 				System.out.println("Connection successful");
 				//2. Create a statement
 				//3. Execute SQL Query
+				
+				statement = conn.createStatement();
+				
+			    String selectSQL = "SELECT id_applicant  "
+			    		+ "FROM mydb.applicant WHERE jmbg = " + jmbg;
+			   
+			    rs = statement.executeQuery(selectSQL);
+				
+			    while (rs.next()) {
+			    	id_applicant = rs.getInt(1);
+			    }
+				
 				String insertSQL = "INSERT INTO Bank_Portfolio (created_date_time, loan_type, status, id_applicant) "
 						+ "VALUES (?, ?, ?)";
 			    preparedStatement = conn.prepareStatement(insertSQL);
 			    preparedStatement.setDate(1, (java.sql.Date) portfolio.getCreatedDateTime());
 			    preparedStatement.setString(2, portfolio.getLoanType());
 			    preparedStatement.setString(3, portfolio.getStatus());
+			    preparedStatement.setInt(3, id_applicant);
 			    preparedStatement.executeUpdate();
 			}
 			
@@ -285,6 +312,6 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
-	}*/
+	}
 	
 }

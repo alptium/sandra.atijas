@@ -10,6 +10,7 @@ CREATE TABLE `applicant` (
   `N_FAMILY_MEMBERS` int(11) DEFAULT NULL,
   `CONTRACT_TYPE` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `LOAN_TYPE` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `JMBG` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`ID_APPLICANT`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

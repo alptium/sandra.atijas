@@ -4,6 +4,8 @@ import bankloans.Main.ContractType;
 
 public class CashLoan implements Loan {
 	
+	private String typeOfLoan;
+	
 	@Override
 	public String calculateAcceptance(Applicant applicant) {
 		
@@ -12,6 +14,17 @@ public class CashLoan implements Loan {
 				status = "Accepted";
 		}
 			return status;
+	}
+
+	@Override
+	public String gettypeOfLoan() {
+		return typeOfLoan;
+	}
+
+	@Override
+	public void settypeOfLoan(String typeOfLoan) {
+		this.typeOfLoan = typeOfLoan;
+		
 	}
 
 }

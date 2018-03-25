@@ -13,6 +13,7 @@ public class Applicant {
 	ContractType contractType;
 	int numberFamilyMembers;
 	String loanAcceptance;
+	String jmbg;
 
 	/*public Applicant (String name, String surname, int age, double salary, String marital_status, String employment_status, int numberFamilyMembers, ContractType contractType) {
 		this.name = name;
@@ -96,6 +97,14 @@ public class Applicant {
 
 	public void setLoanAcceptance(String loanAcceptance) {
 		this.loanAcceptance = loanAcceptance;
-	}             
+	}
+
+	public String getJmbg() {
+		return jmbg;
+	}
+
+	public void setJmbg(String jmbg) {
+		this.jmbg = jmbg;
+	}   
 	
 }
