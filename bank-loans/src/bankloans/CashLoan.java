@@ -4,7 +4,7 @@ import bankloans.Main.ContractType;
 
 public class CashLoan implements Loan {
 	
-	private String typeOfLoan;
+	private String loanType;
 	
 	@Override
 	public String calculateAcceptance(Applicant applicant) {
@@ -17,13 +17,13 @@ public class CashLoan implements Loan {
 	}
 
 	@Override
-	public String gettypeOfLoan() {
-		return typeOfLoan;
+	public String getloanType() {
+		return loanType;
 	}
 
 	@Override
-	public void settypeOfLoan(String typeOfLoan) {
-		this.typeOfLoan = typeOfLoan;
+	public void setloanType(String loanType) {
+		this.loanType = loanType;
 		
 	}
 

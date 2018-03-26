@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -26,7 +28,7 @@ public class Main {
 		
 		Applicant applicant  = new Applicant();
 		BankPortfolio portfolio = new BankPortfolio(null, null, null, null, null);
-		Date now = new Date();
+		LocalDate localDate = LocalDate.now();
 		
 		try (Scanner sc = new Scanner(System.in)) {
 		//We don't know in advance how many people there will be.
@@ -48,7 +50,7 @@ public class Main {
 				System.out.println("Enter applicant's JMBG?");
 				applicant.setJmbg(sc.next());
 				
-				System.out.println("Enter applicant's employment status:");
+				System.out.println("Enter applicant's employment status: (Y/N)");
 				applicant.setEmployment_status(sc.next());
 				
 				System.out.println("Enter applicant's contract (FULL - full-time, PART - part-time, FREE - freelance; OTHER");
@@ -63,43 +65,41 @@ public class Main {
 		            case "OTHER": applicant.setContractType(ContractType.OTHER);
 		                     break;
 		            default: applicant.setContractType(ContractType.OTHER);
-		            		break;
-		            		
+		            		break;		
 				}
 						
 				System.out.println("Enter applicant's salary");
 				applicant.setSalary(sc.nextDouble());
 				
-				System.out.println("Enter applicant's marital status (S-single, M-married, D - Divorced, W- Widower)");
+				System.out.println("Enter applicant's marital status (S-single, M-married, D - Divorced, W- Widower):");
 				applicant.setMarital_status(sc.next());
 				
-				System.out.println("Enter applicant's number of family members");
+				System.out.println("Enter applicant's number of family members:");
 				applicant.setNumberFamilyMembers(sc.nextInt());
 		
-				
 				System.out.println("Cash loan or Housing Loan (C or H)?");
+				String typeLoan = sc.next();
 		
-				
-				if (sc.next().equalsIgnoreCase("C")) {
+				if (typeLoan.equalsIgnoreCase("C")) {
 					
 					Loan cashLoan = new CashLoan();
 					
-					cashLoan.settypeOfLoan("C");
+					cashLoan.setloanType("C");
 					
 					applicant.setLoanAcceptance(cashLoan.calculateAcceptance(applicant));
 					
-					portfolio = new BankPortfolio(applicant, cashLoan, now, cashLoan.gettypeOfLoan(), applicant.loanAcceptance);
+					portfolio = new BankPortfolio(applicant, cashLoan, localDate, cashLoan.getloanType(), applicant.loanAcceptance);
 				}
 				
-				if (sc.next().equalsIgnoreCase("H")) {
+				if (typeLoan.equalsIgnoreCase("H")) {
 					
 					Loan housingLoan = new HousingLoan();
 					
-					housingLoan.settypeOfLoan("H");
+					housingLoan.setloanType("H");
 					
 					applicant.setLoanAcceptance(housingLoan.calculateAcceptance(applicant));
 					
-					portfolio = new BankPortfolio(applicant, housingLoan, now, housingLoan.gettypeOfLoan(), applicant.loanAcceptance);
+					portfolio = new BankPortfolio(applicant, housingLoan, localDate, housingLoan.getloanType(), applicant.loanAcceptance);
 				}
 			
 				insertApplicants (applicant);
@@ -161,19 +161,19 @@ public class Main {
 				System.out.println("Connection successful");
 				//2. Create a statement
 				//3. Execute SQL Query
-				String insertSQL = "INSERT INTO Applicant (name, surname, age, employment_status, salary, marital_status, loan_acceptance, n_family_members, jmbg) "
+				String insertSQL = "INSERT INTO Applicant (name, surname, age, jmbg, employment_status, salary, marital_status, loan_acceptance, n_family_members, contract_type) "
 						+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			    preparedStatement = conn.prepareStatement(insertSQL);
 			    preparedStatement.setString(1, applicant.getName());
 			    preparedStatement.setString(2, applicant.getSurname());
-			    preparedStatement.setString(3, applicant.getEmployment_status());
-			    preparedStatement.setDouble(4, applicant.getSalary());
-			    preparedStatement.setString(5, applicant.getMarital_status());
-			    preparedStatement.setInt(6, applicant.getAge());
-			    preparedStatement.setString(7, applicant.getLoanAcceptance());
-			    preparedStatement.setInt(8, applicant.getNumberFamilyMembers());
-			    //preparedStatement.setString(9, applicant.getContractType());
-			    preparedStatement.setString(9, applicant.getJmbg());
+			    preparedStatement.setInt(3, applicant.getAge());
+			    preparedStatement.setString(4, applicant.getJmbg());
+			    preparedStatement.setString(5, applicant.getEmployment_status());
+			    preparedStatement.setDouble(6, applicant.getSalary());
+			    preparedStatement.setString(7, applicant.getMarital_status());
+			    preparedStatement.setString(8, applicant.getLoanAcceptance());
+			    preparedStatement.setInt(9, applicant.getNumberFamilyMembers());
+			    preparedStatement.setString(10, applicant.getContractType().name());
 			    preparedStatement.executeUpdate();
 			}
 			
@@ -205,30 +205,30 @@ public class Main {
 
 				statement = conn.createStatement();
 
-			    String sql = "SELECT name, surname, age, employment_status, salary, marital_status, loan_acceptance, n_family_members, contract_type, jmbg  "
+			    String sql = "SELECT name, surname, age, jmbg, employment_status, salary, contract_type, marital_status, n_family_members, loan_acceptance  "
 			    		+ "FROM mydb.applicant ";
 			    rs = statement.executeQuery(sql);
 				
 			    while (rs.next()) {
-	                System.out.print(rs.getString(1));
+	                System.out.print("Name of applIcant: " + rs.getString(1));
 	                System.out.print(" ");
 	                System.out.println(rs.getString(2));
 	                System.out.print(" ");
-	                System.out.println(rs.getInt(3));
+	                System.out.println("Age: " + rs.getInt(3));
 	                System.out.print(" ");
-	                System.out.print(rs.getString(4));
+	                System.out.println("JMBG: " + rs.getString(4));
 	                System.out.print(" ");
-	                System.out.println(rs.getDouble(5));
+	                System.out.print("Employment status: " + rs.getString(5));
 	                System.out.print(" ");
-	                System.out.println(rs.getString(6));
+	                System.out.println(" with salary: " + rs.getDouble(6));
 	                System.out.print(" ");
-	                System.out.print(rs.getString(7));
+	                System.out.println("Contract type: " + rs.getString(7));
 	                System.out.print(" ");
-	                System.out.println(rs.getInt(8));
+	                System.out.println("Marital status: " + rs.getString(8));
 	                System.out.print(" ");
-	                System.out.println(rs.getString(9));
+	                System.out.println("Number of family members: " + rs.getInt(9));
 	                System.out.print(" ");
-	                System.out.println(rs.getString(10));
+	                System.out.println("The bank send response to applicant with response: " + rs.getString(10));
 	            }
 				
 			}
@@ -276,22 +276,23 @@ public class Main {
 				
 				statement = conn.createStatement();
 				
-			    String selectSQL = "SELECT id_applicant  "
+			    String selectSQL = "SELECT id_applicant "
 			    		+ "FROM mydb.applicant WHERE jmbg = " + jmbg;
 			   
 			    rs = statement.executeQuery(selectSQL);
-				
-			    while (rs.next()) {
-			    	id_applicant = rs.getInt(1);
-			    }
-				
+	
+		    	rs.next();
+		    	id_applicant = rs.getInt("id_applicant");
+			    
 				String insertSQL = "INSERT INTO Bank_Portfolio (created_date_time, loan_type, status, id_applicant) "
-						+ "VALUES (?, ?, ?)";
+						+ "VALUES (?, ?, ?, ?)";
+				
 			    preparedStatement = conn.prepareStatement(insertSQL);
-			    preparedStatement.setDate(1, (java.sql.Date) portfolio.getCreatedDateTime());
+			    
+			    preparedStatement.setString(1, DateTimeFormatter.ofPattern("yyy/MM/dd").format(portfolio.getCreatedDateTime()));
 			    preparedStatement.setString(2, portfolio.getLoanType());
 			    preparedStatement.setString(3, portfolio.getStatus());
-			    preparedStatement.setInt(3, id_applicant);
+			    preparedStatement.setInt(4, id_applicant);
 			    preparedStatement.executeUpdate();
 			}
 			

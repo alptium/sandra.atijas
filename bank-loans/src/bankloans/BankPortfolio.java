@@ -7,11 +7,11 @@ public class BankPortfolio {
 	Applicant applicant;
 	Loan loan;
 	String status;
-	Date createdDateTime;
+	LocalDate createdDateTime;
 	String loanType;
 	
 	
-	public BankPortfolio (Applicant applicant, Loan loan, Date createdDateTime, String loanType, String status) {
+	public BankPortfolio (Applicant applicant, Loan loan, LocalDate createdDateTime, String loanType, String status) {
 		
 		this.applicant = applicant;
 		this.loan = loan;
@@ -45,11 +45,11 @@ public class BankPortfolio {
 		this.status = status;
 	}
 
-	public Date getCreatedDateTime() {
+	public LocalDate getCreatedDateTime() {
 		return createdDateTime;
 	}
 
-	public void setCreatedDateTime(Date createdDateTime) {
+	public void setCreatedDateTime(LocalDate createdDateTime) {
 		this.createdDateTime = createdDateTime;
 	}
 
