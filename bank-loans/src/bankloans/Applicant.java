@@ -107,4 +107,10 @@ public class Applicant {
 		this.jmbg = jmbg;
 	}   
 	
+	public String toString() {
+		return "Employment status: " + this.getEmployment_status() + 
+		           ", Marital status: " + this.getMarital_status() +
+		           "Salary " + this.getSalary();
+		}
+	
 }
