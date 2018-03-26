@@ -9,7 +9,9 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 import bankloans.Applicant;
@@ -29,6 +31,7 @@ public class Main {
 		Applicant applicant  = new Applicant();
 		BankPortfolio portfolio = new BankPortfolio(null, null, null, null, null);
 		LocalDate localDate = LocalDate.now();
+		List<Applicant> lstApplicant= new ArrayList<Applicant>();
 		
 		try (Scanner sc = new Scanner(System.in)) {
 		//We don't know in advance how many people there will be.
@@ -104,18 +107,24 @@ public class Main {
 			
 				insertApplicants (applicant);
 				
-				insertBankPortfolio(portfolio,applicant);
+				insertBankPortfolio(portfolio,applicant); 
 				
 				readApplicants ();
+
+				lstApplicant.add(applicant);
 				
-				System.out.println("Do you want to quit the program? Y/N ");
+				
+				
+				System.out.println("Do you want to finish with applicant: ");
 				toQuit = sc.next().charAt(0);
 				
 				if (toQuit ==  'Y' || toQuit == 'y') {
-					System.exit(0);
+					break;
 				}	
 			
 			}
+			
+			doStatists(lstApplicant);
 		}
 	}
 	
@@ -228,7 +237,8 @@ public class Main {
 	                System.out.print(" ");
 	                System.out.println("Number of family members: " + rs.getInt(9));
 	                System.out.print(" ");
-	                System.out.println("The bank send response to applicant with response: " + rs.getString(10));
+	                System.out.println("The bank give response to an applicant: " + rs.getString(10));
+	                System.out.println();
 	            }
 				
 			}
@@ -314,5 +324,48 @@ public class Main {
 			}
 		}
 	}
+	
+	//and number of people employed as well as unemployed, as well as percentages.
+	public static void doStatists (List<Applicant> lstapplicants) {
+		
+		int cntAccepted = 0;
+		int cntMarried = 0;
+		int cntEmployed = 0;
+		double totalSalary = 0;
+		
+		System.out.println("Total number of applicants is: " + lstapplicants.size());
+		
+		for (int j = 0; j < lstapplicants.size(); j++) {
+			System.out.println(lstapplicants.get(j).getMarital_status());
+		}
+		
+		for (int j = 0; j < lstapplicants.size(); j++) {
+			
+			totalSalary += lstapplicants.get(j).getSalary();
+			
+			if (lstapplicants.get(j).getLoanAcceptance().equalsIgnoreCase("Accepted")) {
+				cntAccepted++;
+			}
+			
+			if (lstapplicants.get(j).getMarital_status().equalsIgnoreCase("M")) {
+				cntMarried++;
+			}
+			
+			if (lstapplicants.get(j).getEmployment_status().equalsIgnoreCase("Y")) {
+				cntEmployed++;
+			}
+		}
+		
+		System.out.println("Total number of accepted applicants is: " + cntAccepted);
+		System.out.println("Total number of rejected applicants is: " + (lstapplicants.size()-cntAccepted));
+		System.out.println("Percentage of accepted applicants is: " + cntAccepted/lstapplicants.size()*100 + "%");
+		System.out.println("Percentage of rejected applicants is: " + ((lstapplicants.size()-cntAccepted))/lstapplicants.size()*100 + "%");
+		System.out.println("Average salary of all applicants: " + totalSalary/lstapplicants.size());
+		System.out.println("Total number of married applicants is: " + cntMarried);
+		System.out.println("Total number of applicants who are not married is: " + (lstapplicants.size()-cntMarried));
+		System.out.println("Total number of employed applicants is: " + cntEmployed);
+		System.out.println("Total number of unemployed applicants is: " + (lstapplicants.size()-cntEmployed));
+	}
+	
 	
 }
