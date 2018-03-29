@@ -7,7 +7,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 public class Main {
 	
-	public static enum DifficultyLevel {HIGH, MEDIUM, LOW}
+	public static enum DifficultyLevel {ADVANCED, HIGH, MEDIUM, LOW}
 	private static String username = "root";
 	private static String password = "Sandra990!!";
 	private static String serverName = "localhost";
