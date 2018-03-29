@@ -10,6 +10,10 @@ public class Task {
 		this.descTask = descTask;
 		this.diffLevel = diffLevel;
 	}
+	
+	public Task () {
+
+	}
 
 	public String getDescTask() {
 		return descTask;
