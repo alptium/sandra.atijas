@@ -29,6 +29,17 @@ public class Main {
 			
 			readListOfAnswers(lstAnswers);
 			readListOfTasks(lstTasks);
+			
+			System.out.println("========== QUIZ =========== ");
+			System.out.println("Choose correct answer: A, B or C: ");
+			
+			for (int i = 0; i < lstTasks.size(); i++) {
+				System.out.println(i+1 + ". " + lstTasks.get(i).getDescTask());
+				for (int j = 0; j < 3; j++) { // ima uvek 3 ponudjena
+					System.out.print(lstAnswers.get(j).getPossibleAnswer() + " ");
+				}
+				System.out.println("\n");	
+			}
 		
 		}
 		
@@ -167,7 +178,7 @@ public class Main {
 			    
 			   /* for (int i = 0; i < lstAnswers.size(); i++) {
 			    	System.out.println("TASK is : " + lstAnswers.get(i).getTask().getDescTask() + " ");
-			    	System.out.print("Possible asnwer " + lstAnswers.get(i).getPossibleAnswer() + ": ");
+			    	System.out.print("Possible answer " + lstAnswers.get(i).getPossibleAnswer() + ": ");
 			    	System.out.println("Correct answer: " + lstAnswers.get(i).isCorrect() + " ");
 			    }*/
 				
