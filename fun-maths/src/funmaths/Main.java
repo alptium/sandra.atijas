@@ -23,9 +23,11 @@ public class Main {
 	public static void main(String[] args) {
 		
 		List<Task> lstTasks = new ArrayList<Task>();
+		List<Answer> lstAnswers = new ArrayList<Answer>();
 		
 		try (Scanner sc = new Scanner(System.in)) {
-		
+			
+			readListOfAnswers(lstAnswers);
 			readListOfTasks(lstTasks);
 		
 		}
@@ -65,7 +67,7 @@ public class Main {
 	
 	/*================= READ FROM TABLE TASK =================*/
 	
-	public static Task readListOfTasks(List<Task> lstTasks) {
+	public static void readListOfTasks(List<Task> lstTasks) {
 		Statement statement = null;
 		ResultSet rs = null;
 		String difficulty;
@@ -91,7 +93,7 @@ public class Main {
 	            }
 			    
 			    /*for (int i = 0; i < lstTasks.size(); i++) {
-			    	System.out.print("Level: " + lstTasks.get(i).getDiffLevel() + ": ");
+			    	System.out.print("Level " + lstTasks.get(i).getDiffLevel() + ": ");
 			    	System.out.println(lstTasks.get(i).getDescTask().toString() + " ");
 			    }*/
 				
@@ -117,7 +119,79 @@ public class Main {
 			}
 		}
 		
-		return task;
+	}
+	
+	
+	/*================= READ FROM TABLE TASK =================*/
+	
+	public static void readListOfAnswers(List<Answer> lstAnswers) {
+		Statement statement = null;
+		Statement statement2 = null;
+		ResultSet rs = null;
+		ResultSet rs2 = null;
+		Answer answer = new Answer();
+		Connection conn = getConnection();
+		int id_task = -1;
+		
+		try {
+			if (conn != null) {
+				
+				statement = conn.createStatement();
+				statement2 = conn.createStatement();
+				
+			    String sql = "SELECT POSSIBLE_ANSWER, CORRECT, ID_TASK  "
+			    		+ "FROM mydb.answer ";
+			    
+			    rs = statement.executeQuery(sql);
+				
+			    while (rs.next()) {
+			    	answer = new Answer();
+			    	answer.setPossibleAnswer(rs.getString(1));
+			    	answer.setCorrect(rs.getBoolean(2));
+			       id_task = rs.getInt(3);
+			       
+		    	   String sqlTask = "SELECT DESC_TASK, DIFFICULTY_LEVEL  "
+		    			   + "FROM mydb.task WHERE id_task = " + id_task;
+		    	   
+		    	   rs2 = statement2.executeQuery(sqlTask);
+		    	   
+		    	   rs2.next();
+	    		   String description = rs2.getString(1);
+		    	   String difficulty = rs2.getString(2);
+		    	   Task task = new Task(description, DifficultyLevel.valueOf(difficulty));
+		    	   
+		    	   answer.setTask(task);
+		    	   
+		    	   lstAnswers.add(answer);
+	            }
+			    
+			   /* for (int i = 0; i < lstAnswers.size(); i++) {
+			    	System.out.println("TASK is : " + lstAnswers.get(i).getTask().getDescTask() + " ");
+			    	System.out.print("Possible asnwer " + lstAnswers.get(i).getPossibleAnswer() + ": ");
+			    	System.out.println("Correct answer: " + lstAnswers.get(i).isCorrect() + " ");
+			    }*/
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(statement!=null) {			
+					statement.close();
+				}
+				
+				if(rs!=null) {			
+					rs.close();
+				}
+				
+				if(conn!=null) {			
+					conn.close();
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 		
 	}
 	
