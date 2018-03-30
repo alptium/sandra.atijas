@@ -316,6 +316,7 @@ public class Main {
 	
 	/*================= READ FROM TABLE CHILD =================*/
 	
+	//With procedure statistics, parents can follow the progress of their child 
 	public static void doStatistics() {
 		Statement statement = null;
 		ResultSet rs = null;
