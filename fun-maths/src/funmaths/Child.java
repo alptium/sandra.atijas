@@ -1,17 +1,20 @@
 package funmaths;
 
-import java.util.Date;
 
 public class Child {
 	
 	String name;
 	int noCorrectAnswers;
-	Date testDuration;
+	String testDuration;
+	String reachedLevel;
 	
-	public Child (String name, int noCorrectAnswers,Date testDuration) {
+	public Child (String name, int noCorrectAnswers,String testDuration) {
 		this.name = name;
 		this.noCorrectAnswers = noCorrectAnswers;
 		this.testDuration = testDuration;
+	}
+	
+	public Child () {
 	}
 	
 	public String getName() {
@@ -27,15 +30,23 @@ public class Child {
 	}
 	
 	public void setNoCorrectAnswers(int noCorrectAnswers) {
-		noCorrectAnswers = noCorrectAnswers;
+		this.noCorrectAnswers = noCorrectAnswers;
 	}
 	
-	public Date getTestDuration() {
+	public String getTestDuration() {
 		return testDuration;
 	}
 	
-	public void setTestDuration(Date testDuration) {
+	public void setTestDuration(String testDuration) {
 		this.testDuration = testDuration;
+	}
+
+	public String getReachedLevel() {
+		return reachedLevel;
+	}
+
+	public void setReachedLevel(String reachedLevel) {
+		this.reachedLevel = reachedLevel;
 	}
 
 }
