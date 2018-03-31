@@ -1,18 +1,29 @@
 package restaurant;
 
-public class Ingridient {
+public class Ingredient {
 	
+	int id_ingredient;
 	String name;
 	double quantity;
 	
-	public Ingridient() {}
+	public Ingredient() {}
 	
-	public Ingridient(String name, double quantity) {
+	public Ingredient(int id_ingredient, String name, double quantity) {
 		super();
+		this.id_ingredient = id_ingredient;
 		this.name = name;
 		this.quantity = quantity;
 	}
 	
+	
+	public int getId_ingridient() {
+		return id_ingredient;
+	}
+
+	public void setId_ingridient(int id_ingredient) {
+		this.id_ingredient = id_ingredient;
+	}
+
 	public String getName() {
 		return name;
 	}

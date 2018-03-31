@@ -6,11 +6,11 @@ CREATE TABLE `ORDER` (
    PRIMARY KEY (`id_Order`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `INGRIDIENT` (
-   `id_ingridient` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE `INGREDIENT` (
+   `id_ingredient` INT NOT NULL AUTO_INCREMENT,
    `name` VARCHAR(50) COLLATE utf8_unicode_ci default NULL,
    `quantity`  DOUBLE default NULL,
-   PRIMARY KEY (`id_ingridient`)
+   PRIMARY KEY (`id_ingredient`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `WAITER` (
