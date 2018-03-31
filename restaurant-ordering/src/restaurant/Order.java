@@ -2,10 +2,29 @@ package restaurant;
 
 public class Order {
 	
+	int id_Order;
 	String order;
 	boolean isServed;
 	boolean isPaid;
 	
+	public Order() {}
+
+	public Order(int id_Order, String order, boolean isServed, boolean isPaid) {
+		super();
+		this.id_Order = id_Order;
+		this.order = order;
+		this.isServed = isServed;
+		this.isPaid = isPaid;
+	}
+
+	public int getId_Order() {
+		return id_Order;
+	}
+
+	public void setId_Order(int id_Order) {
+		this.id_Order = id_Order;
+	}
+
 	public String getOrder() {
 		return order;
 	}

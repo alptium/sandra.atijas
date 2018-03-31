@@ -6,6 +6,15 @@ public class Table {
 	boolean isOccupied;
 	Order order;
 	
+	public Table() {}
+
+	public Table(int numberOfTable, boolean isOccupied, Order order) {
+		super();
+		this.numberOfTable = numberOfTable;
+		this.isOccupied = isOccupied;
+		this.order = order;
+	}
+
 	public int getNumberOfTable() {
 		return numberOfTable;
 	}
