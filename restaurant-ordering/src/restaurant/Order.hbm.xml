@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 31 Mar 2018, 22:53:26 by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="restaurant.Order" table="ORDER">
+        <id name="id_Order" type="int">
+            <column name="ID_ORDER" />
+            <generator class="assigned" />
+        </id>
+        <property name="order" type="java.lang.String">
+            <column name="ORDER" />
+        </property>
+        <property name="isServed" type="boolean" access="field">
+            <column name="ISSERVED" />
+        </property>
+        <property name="isPaid" type="boolean" access="field">
+            <column name="ISPAID" />
+        </property>
+    </class>
+</hibernate-mapping>
