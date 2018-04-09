@@ -2,7 +2,9 @@ package appointments;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,44 +35,50 @@ public class Main {
 		Reservation res = new Reservation();
 		
 		List<Reservation> lstReservations = new ArrayList<Reservation>();
-		Date date1 = null;
-		
+
 		try (Scanner sc = new Scanner(System.in)) {
 			
-			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			
 			System.out.println("======= HOLIDAYS TIME========");
-			System.out.println("Unesite datum pocetka Vaseg odmora: (u formatu dd-MM-yyyy)");
-			String startVacationDate = sc.next();
-			System.out.println("Unesite broj dana koliko ste na odmoru? ");
-			int numberVacationDays = sc.nextInt();
+			System.out.println();
+			System.out.println ("Da li zelite da unesete vas odmor u agendu? (Y/N)");
 			
-			Date startDateVacation = formatter.parse(startVacationDate);
-			Calendar vacationCalendar = Calendar.getInstance(); 
-			vacationCalendar.setTime(startDateVacation);
-			vacationCalendar.add(Calendar.DATE, numberVacationDays + 1);
-			Date endDateVacation = vacationCalendar.getTime();
-		    //System.out.println(formatter.format(endDateVacation));
+			if (sc.next().equalsIgnoreCase("Y")) {
 				
-			insertHolidays(res,startDateVacation,endDateVacation);
-			
-			System.out.println("Recite koji datum Vas zanima? (u formatu dd-MM-yyyy)");
-			String datumUStringu = sc.next();
-		
-			
-	
-		    date1 = formatter.parse(datumUStringu);
-		    System.out.println(formatter.format(date1));
-		    Calendar c = Calendar.getInstance(); 
-		    c.setTime(date1);
-		    c.add(Calendar.DATE, 1);
-		    date1 = c.getTime();
-		    System.out.println(formatter.format(date1));
-			
-			
-			if (date1 == res.getReservationDate()) {
+				System.out.println("Unesite datum pocetka Vaseg odmora: (u formatu yyyy-MM-dd)");
+				String startVacationDate = sc.next();
+				System.out.println("Unesite broj dana koliko ste na odmoru? ");
+				int numberVacationDays = sc.nextInt();
 				
+				Date startDateVacation = formatter.parse(startVacationDate);
+				Calendar vacationCalendar = Calendar.getInstance(); 
+				vacationCalendar.setTime(startDateVacation);
+				vacationCalendar.add(Calendar.DATE, numberVacationDays);
+				Date endDateVacation = vacationCalendar.getTime();
+			    //System.out.println(formatter.format(endDateVacation));
+					
+				// In this part, hair dresser puts her vacation into her agenda
+				while (!startDateVacation.equals(endDateVacation)) {
+					insertHolidays(startDateVacation);
+					vacationCalendar.setTime(startDateVacation);
+					vacationCalendar.add(Calendar.DATE, 1);
+					startDateVacation = vacationCalendar.getTime();
+				}
+				
+				System.out.println();
 			}
+		
+			System.out.println("======= MAKING RESERVATIONS========");
+			System.out.println("Datum rezervacije? (u formatu dd-MM-yyyy)");
+			String dateTreatment = sc.next();
+	
+		    Date treatmentDate = formatter.parse(dateTreatment);
+		    //System.out.println(formatter.format(treatmentDate));
+		    
+		    
+		    readReservations (treatmentDate);
+			
 			
 		} catch (ParseException e1) {
 			 //handle exception if date is not in "dd-MMM-yyyy" format
@@ -97,7 +105,7 @@ public class Main {
 			conn = dataSource.getConnection();
 			
 			if (conn != null) {
-				System.out.println("Connection successful");
+				//System.out.println("Connection successful");
 			}
 			
 		} catch (SQLException e) {
@@ -108,10 +116,11 @@ public class Main {
 	}
 	
 	/*=========================INSERT HOLIDAYS INTO RESERVATION TABLE=====================*/
-	public static void insertHolidays (Reservation reservation, Date startDate, Date endDate) {
+	public static void insertHolidays (Date startDate) {
 		
 		Connection conn = getConnection(); 
 		PreparedStatement preparedStatement = null;	
+		
 		
 		try {
 			
@@ -119,14 +128,11 @@ public class Main {
 				System.out.println("Connection successful");
 				//2. Create a statement
 				//3. Execute SQL Query
-				String insertSQL = "INSERT INTO Reservation (customer_name, reservation_date, time_slot, service_type, day_type) "
-						+ "VALUES (?, ?, ?, ?, ?)";
+				String insertSQL = "INSERT INTO Reservation (reservation_date, day_type) "
+						+ "VALUES (?, ?)";
 			    preparedStatement = conn.prepareStatement(insertSQL);
-			    preparedStatement.setString(1, reservation.getCustomerName());
-			    preparedStatement.setString(2, reservation.getReservationDate().toString());
-			    preparedStatement.setInt(3, reservation.getTimeSlot());
-			    preparedStatement.setString(4, reservation.getServiceType());
-			    preparedStatement.setString(5, reservation.getDayType().name());
+				preparedStatement.setObject(1, startDate);
+			    preparedStatement.setString(2, DayType.VACATION.toString());
 			    preparedStatement.executeUpdate();
 			}
 			
@@ -147,6 +153,66 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	
+	/*=========================READ RESERVATIONS FROM RESERVATION TABLE=====================*/
+	public static void readReservations (Date treatmentDate) {
+		Statement statement = null;
+		ResultSet rs = null;
+		Connection conn = getConnection();
+		
+		Reservation res = null;
+		List<Reservation> lstReservations = new ArrayList<Reservation>();
+		
+		try {
+			if (conn != null) {
+
+				statement = conn.createStatement();
+
+			    String sql = "SELECT id_reservation, customer_name, reservation_date, time_slot, service_type, day_type  "
+			    		+ "FROM mydb.reservation WHERE reservation_date = " + (Object)treatmentDate;
+			    rs = statement.executeQuery(sql);
+				
+			    while (rs.next()) {
+			    	res = new Reservation();
+	                res.setIdRreservation(rs.getInt(1));
+	                res.setCustomerName(rs.getString(2));
+	                res.setReservationDate(rs.getDate(3));
+	                res.setTimeSlot(rs.getInt(4));
+	              	res.setServiceType(rs.getString(5));
+	              	DayType dt = DayType.valueOf(rs.getString(6));
+	                res.setDayType(dt);
+	                //System.out.println();
+	                lstReservations.add(res);
+	            }
+			    
+			    for (int i = 0; i < lstReservations.size(); i++) {
+			    	System.out.println(lstReservations.get(i).getDayType());
+			    }
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(statement!=null) {			
+					statement.close();
+				}
+				
+				if(rs!=null) {			
+					rs.close();
+				}
+				
+				if(conn!=null) {			
+					conn.close();
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	
 
