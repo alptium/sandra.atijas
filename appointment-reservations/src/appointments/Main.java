@@ -70,15 +70,27 @@ public class Main {
 			}
 		
 			System.out.println("======= MAKING RESERVATIONS========");
-			System.out.println("Datum rezervacije? (u formatu dd-MM-yyyy)");
+			System.out.println("Datum rezervacije? (u formatu yyyy-MM-dd)");
 			String dateTreatment = sc.next();
 	
 		    Date treatmentDate = formatter.parse(dateTreatment);
 		    //System.out.println(formatter.format(treatmentDate));
 		    
 		    
-		    readReservations (treatmentDate);
-			
+		    lstReservations = readReservations (dateTreatment);
+		    
+		    if (lstReservations.size() == 9) {
+		    	System.out.println("Svi termini su za ovaj datum zauzeti! Stavicu Vas u listu cekanja");
+		    	/*=============== Algoritam za listu cekanja ================*/
+		    }
+		    
+		    if (lstReservations.isEmpty()) {
+		    	System.out.println("Svi termini za ovaj datum su slobodni!");
+		    	/*=============== bilo koji termin u tom datumu moze da upise ================*/
+		    }
+		    else {
+		    	/*=============== provera slobodnih termina ================*/
+		    }
 			
 		} catch (ParseException e1) {
 			 //handle exception if date is not in "dd-MMM-yyyy" format
@@ -157,7 +169,7 @@ public class Main {
 	
 	
 	/*=========================READ RESERVATIONS FROM RESERVATION TABLE=====================*/
-	public static void readReservations (Date treatmentDate) {
+	public static List<Reservation> readReservations (String treatmentDate) {
 		Statement statement = null;
 		ResultSet rs = null;
 		Connection conn = getConnection();
@@ -169,9 +181,9 @@ public class Main {
 			if (conn != null) {
 
 				statement = conn.createStatement();
-
+				java.sql.Date sqlDate = java.sql.Date.valueOf( treatmentDate );
 			    String sql = "SELECT id_reservation, customer_name, reservation_date, time_slot, service_type, day_type  "
-			    		+ "FROM mydb.reservation WHERE reservation_date = " + (Object)treatmentDate;
+			    		+ "FROM mydb.reservation WHERE reservation_date = '" + sqlDate + "'";
 			    rs = statement.executeQuery(sql);
 				
 			    while (rs.next()) {
@@ -212,7 +224,7 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
-		
+		return lstReservations;
 	}
 	
 
