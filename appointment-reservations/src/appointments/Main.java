@@ -88,18 +88,39 @@ public class Main {
 		    
 		    if (lstReservations.isEmpty()) {
 		    	System.out.println("For this date all time slots are available.");
-		    	System.out.println("Possible time slots are from 8h until 19h (rounded on the exact hour)");
+		    	System.out.println("Possible time slots are from 8h until 19h (rounded on the exact hour):");
 		    	wishedTimeSlot = sc.nextInt();
 		    	
 		    	while (wishedTimeSlot < 8 || wishedTimeSlot > 19) {
 		    		System.out.println("The time slot is not arount working hours. Please type again. ");
 					wishedTimeSlot = sc.nextInt();
 				} 
-		    	
-		    	/*=============== bilo koji termin u tom datumu moze da upise ================*/
 		    }
 		    else {
-		    	/*=============== provera slobodnih termina ================*/
+		    	/*Array of all taken time slots which are already occupied*/
+		    	int [] takenSlots = new int[9]; //maximal number of taken slots can be 9
+		    
+		    	for (int i = 0; i< lstReservations.size(); i++) {
+		    		takenSlots[i] = lstReservations.get(i).getTimeSlot();
+		    	}
+		    	
+		    	System.out.println("Which hour is good for you (rounded on the exact hour)?");
+		    	wishedTimeSlot = sc.nextInt();
+		    	
+		    	while (wishedTimeSlot < 8 || wishedTimeSlot > 19) {
+		    		System.out.println("The time slot is not arount working hours. Please type again. ");
+					wishedTimeSlot = sc.nextInt();
+					
+					boolean isThere = false;
+					for (int i = 0; i < takenSlots.length; i++) {
+						if (wishedTimeSlot == takenSlots[i]) {
+							isThere = true;
+							System.out.println("The time slot is already taken. Please type again. ");
+							wishedTimeSlot = sc.nextInt();
+							break;
+						}
+			    	}	
+				} 
 		    }
 		    
 		    System.out.println("Haircut/Styling/Washing/Hair coloring/All: (H/S/W/C/A)");
