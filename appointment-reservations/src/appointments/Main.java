@@ -33,7 +33,9 @@ public class Main {
 	public static void main(String[] args)  {
 		
 		Reservation res = new Reservation();
-		
+		String treatment = null;
+		String customerName = null;
+		int wishedTimeSlot = 0;
 		List<Reservation> lstReservations = new ArrayList<Reservation>();
 
 		try (Scanner sc = new Scanner(System.in)) {
@@ -42,13 +44,13 @@ public class Main {
 			
 			System.out.println("======= HOLIDAYS TIME========");
 			System.out.println();
-			System.out.println ("Da li zelite da unesete vas odmor u agendu? (Y/N)");
+			System.out.println ("Do you want to fullfil your vacation in your agenda? (Y/N)");
 			
 			if (sc.next().equalsIgnoreCase("Y")) {
 				
-				System.out.println("Unesite datum pocetka Vaseg odmora: (u formatu yyyy-MM-dd)");
+				System.out.println("Start date of your vacation: (in format yyyy-MM-dd)");
 				String startVacationDate = sc.next();
-				System.out.println("Unesite broj dana koliko ste na odmoru? ");
+				System.out.println("Number of days while you are in vacation is? ");
 				int numberVacationDays = sc.nextInt();
 				
 				Date startDateVacation = formatter.parse(startVacationDate);
@@ -70,7 +72,7 @@ public class Main {
 			}
 		
 			System.out.println("======= MAKING RESERVATIONS========");
-			System.out.println("Datum rezervacije? (u formatu yyyy-MM-dd)");
+			System.out.println("What date do you want to reserve? (in format yyyy-MM-dd)");
 			String dateTreatment = sc.next();
 	
 		    Date treatmentDate = formatter.parse(dateTreatment);
@@ -80,23 +82,38 @@ public class Main {
 		    lstReservations = readReservations (dateTreatment);
 		    
 		    if (lstReservations.size() == 9) {
-		    	System.out.println("Svi termini su za ovaj datum zauzeti! Stavicu Vas u listu cekanja");
-		    	/*=============== Algoritam za listu cekanja ================*/
+		    	System.out.println("For this day there is nothing free. I will put you in a queue.");
+		    	/*================ Algoritam za listu cekanja ================*/
 		    }
 		    
 		    if (lstReservations.isEmpty()) {
-		    	System.out.println("Svi termini za ovaj datum su slobodni!");
+		    	System.out.println("For this date all time slots are available.");
+		    	System.out.println("Possible time slots are from 8h until 19h (rounded on the exact hour)");
+		    	wishedTimeSlot = sc.nextInt();
+		    	
+		    	while (wishedTimeSlot < 8 || wishedTimeSlot > 19) {
+		    		System.out.println("The time slot is not arount working hours. Please type again. ");
+					wishedTimeSlot = sc.nextInt();
+				} 
+		    	
 		    	/*=============== bilo koji termin u tom datumu moze da upise ================*/
 		    }
 		    else {
 		    	/*=============== provera slobodnih termina ================*/
 		    }
+		    
+		    System.out.println("Haircut/Styling/Washing/Hair coloring/All: (H/S/W/C/A)");
+		    treatment = sc.next();
+		    System.out.println("Your name: ");
+		    customerName = sc.next();
+		    
+		    insertReservations(customerName, wishedTimeSlot,treatmentDate, treatment);
 			
 		} catch (ParseException e1) {
 			 //handle exception if date is not in "dd-MMM-yyyy" format
 			e1.printStackTrace();
 		}
-	
+		
 	}
 	
 	/*=========================GET CONNECTION=====================*/
@@ -145,6 +162,50 @@ public class Main {
 			    preparedStatement = conn.prepareStatement(insertSQL);
 				preparedStatement.setObject(1, startDate);
 			    preparedStatement.setString(2, DayType.VACATION.toString());
+			    preparedStatement.executeUpdate();
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("Connection unsuccessful");
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(preparedStatement!=null) {			
+					preparedStatement.close();
+				}
+				
+				if(conn!=null) {			
+					conn.close();
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	/*=========================INSERT RESERVATIONS INTO RESERVATION TABLE=====================*/
+	public static void insertReservations (String customerName, int wishedTimeSlot, Date treatmentDate, String treatment) {
+		
+		Connection conn = getConnection(); 
+		PreparedStatement preparedStatement = null;	
+		
+		
+		try {
+	
+			if (conn != null) {
+				System.out.println("Connection successful");
+				//2. Create a statement
+				//3. Execute SQL Query
+				String insertSQL = "INSERT INTO Reservation (customer_name, reservation_date, time_slot, service_type, day_type) "
+						+ "VALUES (?, ?, ?, ?, ?)";
+			    preparedStatement = conn.prepareStatement(insertSQL);
+				preparedStatement.setString(1, customerName);
+				preparedStatement.setObject(2, treatmentDate); 
+				preparedStatement.setInt(3, wishedTimeSlot); 
+				preparedStatement.setString(4, treatment);
+			    preparedStatement.setString(5, DayType.RESERVED.toString());
 			    preparedStatement.executeUpdate();
 			}
 			
