@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
@@ -16,6 +17,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 
 public class Main {
 	
@@ -37,6 +39,7 @@ public class Main {
 		String customerName = null;
 		int wishedTimeSlot = 0;
 		List<Reservation> lstReservations = new ArrayList<Reservation>();
+		Queue<Reservation> waitingQueue = new LinkedList<Reservation>();  
 
 		try (Scanner sc = new Scanner(System.in)) {
 			
@@ -75,6 +78,11 @@ public class Main {
 			System.out.println("What date do you want to reserve? (in format yyyy-MM-dd)");
 			String dateTreatment = sc.next();
 	
+		    System.out.println("Haircut/Styling/Washing/Hair coloring/All: (H/S/W/C/A)");
+		    treatment = sc.next();
+		    System.out.println("Your name: ");
+		    customerName = sc.next();
+			
 		    Date treatmentDate = formatter.parse(dateTreatment);
 		    //System.out.println(formatter.format(treatmentDate));
 		    
@@ -83,34 +91,50 @@ public class Main {
 		    
 		    if (lstReservations.size() == 9) {
 		    	System.out.println("For this day there is nothing free. I will put you in a queue.");
-		    	/*================ Algoritam za listu cekanja ================*/
-		    }
-		    
-		    if (lstReservations.isEmpty()) {
-		    	System.out.println("For this date all time slots are available.");
-		    	System.out.println("Possible time slots are from 8h until 19h (rounded on the exact hour):");
-		    	wishedTimeSlot = sc.nextInt();
-		    	
-		    	while (wishedTimeSlot < 8 || wishedTimeSlot > 19) {
-		    		System.out.println("The time slot is not arount working hours. Please type again. ");
-					wishedTimeSlot = sc.nextInt();
-				} 
-		    }
-		    else {
-		    	/*Array of all taken time slots which are already occupied*/
-		    	int [] takenSlots = new int[9]; //maximal number of taken slots can be 9
-		    
-		    	for (int i = 0; i< lstReservations.size(); i++) {
-		    		takenSlots[i] = lstReservations.get(i).getTimeSlot();
-		    	}
-		    	
 		    	System.out.println("Which hour is good for you (rounded on the exact hour)?");
 		    	wishedTimeSlot = sc.nextInt();
 		    	
 		    	while (wishedTimeSlot < 8 || wishedTimeSlot > 19) {
 		    		System.out.println("The time slot is not arount working hours. Please type again. ");
 					wishedTimeSlot = sc.nextInt();
-					
+		    	}
+		    	
+		    	Reservation resInQueue = new Reservation();
+		    	resInQueue.setCustomerName(customerName);
+		    	resInQueue.setReservationDate(treatmentDate);
+		    	resInQueue.setServiceType(treatment);
+		    	resInQueue.setTimeSlot(wishedTimeSlot);
+		    	waitingQueue.add(resInQueue);
+		    	
+
+		    	/*==================== Algorithm for waiting list ================*/
+		    }
+		    else {
+			    if (lstReservations.isEmpty()) {
+			    	System.out.println("For this date all time slots are available.");
+			    	System.out.println("Possible time slots are from 8h until 19h (rounded on the exact hour):");
+			    	wishedTimeSlot = sc.nextInt();
+			    	
+			    	while (wishedTimeSlot < 8 || wishedTimeSlot > 19) {
+			    		System.out.println("The time slot is not arount working hours. Please type again. ");
+						wishedTimeSlot = sc.nextInt();
+					} 
+			    }
+			    else {
+			    	/*Array of all taken time slots which are already occupied*/
+			    	int [] takenSlots = new int[9]; //maximal number of taken slots can be 9
+			    
+			    	for (int i = 0; i< lstReservations.size(); i++) {
+			    		takenSlots[i] = lstReservations.get(i).getTimeSlot();
+			    	}
+			    	
+			    	System.out.println("Which hour is good for you (rounded on the exact hour)?");
+			    	wishedTimeSlot = sc.nextInt();
+			    	
+			    	while (wishedTimeSlot < 8 || wishedTimeSlot > 19) {
+			    		System.out.println("The time slot is not arount working hours. Please type again. ");
+						wishedTimeSlot = sc.nextInt();
+			    	}		
 					boolean isThere = false;
 					for (int i = 0; i < takenSlots.length; i++) {
 						if (wishedTimeSlot == takenSlots[i]) {
@@ -119,14 +143,14 @@ public class Main {
 							wishedTimeSlot = sc.nextInt();
 							break;
 						}
-			    	}	
-				} 
+					} 
+					System.out.println("You reserved your time slot!");
+			    }
 		    }
-		    
-		    System.out.println("Haircut/Styling/Washing/Hair coloring/All: (H/S/W/C/A)");
+		    /*System.out.println("Haircut/Styling/Washing/Hair coloring/All: (H/S/W/C/A)");
 		    treatment = sc.next();
 		    System.out.println("Your name: ");
-		    customerName = sc.next();
+		    customerName = sc.next();*/
 		    
 		    insertReservations(customerName, wishedTimeSlot,treatmentDate, treatment);
 			
@@ -216,7 +240,7 @@ public class Main {
 		try {
 	
 			if (conn != null) {
-				System.out.println("Connection successful");
+				//System.out.println("Connection successful");
 				//2. Create a statement
 				//3. Execute SQL Query
 				String insertSQL = "INSERT INTO Reservation (customer_name, reservation_date, time_slot, service_type, day_type) "
@@ -281,9 +305,9 @@ public class Main {
 	                lstReservations.add(res);
 	            }
 			    
-			    for (int i = 0; i < lstReservations.size(); i++) {
+			    /*for (int i = 0; i < lstReservations.size(); i++) {
 			    	System.out.println(lstReservations.get(i).getDayType());
-			    }
+			    }*/
 				
 			}
 		} catch (Exception e) {
