@@ -176,6 +176,7 @@ public class Main {
 					if (sc.next().equalsIgnoreCase("Y")) {
 						waitingQueue.poll(); 			// retrieve and remove the first element
 						insertReservations(firstInQueue.customerName, timeSlotCancelled,cancelReservationDate, firstInQueue.getServiceType());
+						break;
 					}	
 				}		
 			}
