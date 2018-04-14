@@ -165,7 +165,16 @@ public class Main {
 				String cancelDate = sc.next();
 				int timeSlotCancelled = sc.nextInt();
 	
-				cancelReservations (cancelDate,timeSlotCancelled);
+				int result = cancelReservations (cancelDate,timeSlotCancelled);
+				
+				while (result == 0) {
+					System.out.println("You have enter incorrect date or time!");
+					System.out.println("Please enter correct date (in format yyyy-MM-dd) and correct time");
+					cancelDate = sc.next();
+					timeSlotCancelled = sc.nextInt();
+					result = cancelReservations (cancelDate,timeSlotCancelled);
+				}
+				
 				Date cancelReservationDate = formatter.parse(cancelDate);
 				for (int i = 0; i < waitingQueue.size(); i++) {
 					Reservation firstInQueue = waitingQueue.element();
@@ -385,7 +394,7 @@ public class Main {
 	}
 	
 	/*=========================CANCEL RESERVATIONS AND DELETE FROM TABLE=====================*/
-	public static void cancelReservations (String treatmentDate, int timeSlot) {
+	public static int cancelReservations (String treatmentDate, int timeSlot) {
 		Statement statement = null;
 		ResultSet rs = null;
 		Connection conn = getConnection();
@@ -395,7 +404,7 @@ public class Main {
 			if (conn != null) {
 				java.sql.Date sqlDate = java.sql.Date.valueOf( treatmentDate);
 				
-			    String deleteSQL ="DELETE FROM mydb.reservation WHERE reservation_date = ? and timeSlot = ?";
+			    String deleteSQL ="DELETE FROM mydb.reservation WHERE reservation_date = ? and time_slot = ?";
 			    
 			    preparedStatement = conn.prepareStatement(deleteSQL);
 				preparedStatement.setObject(1, sqlDate);
@@ -405,10 +414,15 @@ public class Main {
 			    if (rowsDeleted > 0) {
 			        System.out.println("A reservation was deleted successfully!");
 			    }
+			    else {
+			    	return 0;
+			    }
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return 1;
 	}
 	
 }
