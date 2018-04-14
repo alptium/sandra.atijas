@@ -38,13 +38,14 @@ public class Main {
 		String treatment = null;
 		String customerName = null;
 		int wishedTimeSlot = 0;
-		List<Reservation> lstReservations = new ArrayList<Reservation>();
+		List<Reservation> lstReservationsForDate = new ArrayList<Reservation>();
 		Queue<Reservation> waitingQueue = new LinkedList<Reservation>();  
-
+				
 		try (Scanner sc = new Scanner(System.in)) {
 			
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			
+		 
 			System.out.println("======= HOLIDAYS TIME========");
 			System.out.println();
 			System.out.println ("Do you want to fullfil your vacation in your agenda? (Y/N)");
@@ -73,86 +74,111 @@ public class Main {
 				
 				System.out.println();
 			}
-		
-			System.out.println("======= MAKING RESERVATIONS========");
-			System.out.println("What date do you want to reserve? (in format yyyy-MM-dd)");
-			String dateTreatment = sc.next();
-	
-		    System.out.println("Haircut/Styling/Washing/Hair coloring/All: (H/S/W/C/A)");
-		    treatment = sc.next();
-		    System.out.println("Your name: ");
-		    customerName = sc.next();
 			
-		    Date treatmentDate = formatter.parse(dateTreatment);
-		    //System.out.println(formatter.format(treatmentDate));
-		    
-		    
-		    lstReservations = readReservations (dateTreatment);
-		    
-		    if (lstReservations.size() == 9) {
-		    	System.out.println("For this day there is nothing free. I will put you in a queue.");
-		    	System.out.println("Which hour is good for you (rounded on the exact hour)?");
-		    	wishedTimeSlot = sc.nextInt();
-		    	
-		    	while (wishedTimeSlot < 8 || wishedTimeSlot > 19) {
-		    		System.out.println("The time slot is not arount working hours. Please type again. ");
-					wishedTimeSlot = sc.nextInt();
-		    	}
-		    	
-		    	Reservation resInQueue = new Reservation();
-		    	resInQueue.setCustomerName(customerName);
-		    	resInQueue.setReservationDate(treatmentDate);
-		    	resInQueue.setServiceType(treatment);
-		    	resInQueue.setTimeSlot(wishedTimeSlot);
-		    	waitingQueue.add(resInQueue);
-		    	
-
-		    	/*==================== Algorithm for waiting list ================*/
-		    }
-		    else {
-			    if (lstReservations.isEmpty()) {
-			    	System.out.println("For this date all time slots are available.");
-			    	System.out.println("Possible time slots are from 8h until 19h (rounded on the exact hour):");
-			    	wishedTimeSlot = sc.nextInt();
-			    	
-			    	while (wishedTimeSlot < 8 || wishedTimeSlot > 19) {
-			    		System.out.println("The time slot is not arount working hours. Please type again. ");
-						wishedTimeSlot = sc.nextInt();
-					} 
-			    }
-			    else {
-			    	/*Array of all taken time slots which are already occupied*/
-			    	int [] takenSlots = new int[9]; //maximal number of taken slots can be 9
+			System.out.println("Reservations/Cancelations (R/C)?");
+			
+			if (sc.next().equalsIgnoreCase("R")) {
+				
+				System.out.println("======= MAKING RESERVATIONS========");
+				System.out.println("What date do you want to reserve? (in format yyyy-MM-dd)");
+				String dateTreatment = sc.next();
+		
+			    System.out.println("Haircut/Styling/Washing/Hair coloring/All: (H/S/W/C/A)");
+			    treatment = sc.next();
+			    System.out.println("Your name: ");
+			    customerName = sc.next();
+				
+			    Date treatmentDate = formatter.parse(dateTreatment);
+			    //System.out.println(formatter.format(treatmentDate));
 			    
-			    	for (int i = 0; i< lstReservations.size(); i++) {
-			    		takenSlots[i] = lstReservations.get(i).getTimeSlot();
-			    	}
-			    	
+			    
+			    lstReservationsForDate = readReservations (dateTreatment);
+			    
+			    if (lstReservationsForDate.size() == 9) {
+			    	System.out.println("For this day there is nothing free. I will put you in a queue.");
 			    	System.out.println("Which hour is good for you (rounded on the exact hour)?");
 			    	wishedTimeSlot = sc.nextInt();
 			    	
 			    	while (wishedTimeSlot < 8 || wishedTimeSlot > 19) {
 			    		System.out.println("The time slot is not arount working hours. Please type again. ");
 						wishedTimeSlot = sc.nextInt();
-			    	}		
-					boolean isThere = false;
-					for (int i = 0; i < takenSlots.length; i++) {
-						if (wishedTimeSlot == takenSlots[i]) {
-							isThere = true;
-							System.out.println("The time slot is already taken. Please type again. ");
-							wishedTimeSlot = sc.nextInt();
-							break;
-						}
-					} 
-					System.out.println("You reserved your time slot!");
+			    	}
+			    	
+			    	Reservation resInQueue = new Reservation();
+			    	resInQueue.setCustomerName(customerName);
+			    	resInQueue.setReservationDate(treatmentDate);
+			    	resInQueue.setServiceType(treatment);
+			    	resInQueue.setTimeSlot(wishedTimeSlot);
+			    	waitingQueue.add(resInQueue);
+			    	
+			    	// procedure if somebody cancel
+			    	
 			    }
-		    }
-		    /*System.out.println("Haircut/Styling/Washing/Hair coloring/All: (H/S/W/C/A)");
-		    treatment = sc.next();
-		    System.out.println("Your name: ");
-		    customerName = sc.next();*/
-		    
-		    insertReservations(customerName, wishedTimeSlot,treatmentDate, treatment);
+			    else {
+				    if (lstReservationsForDate.isEmpty()) {
+				    	System.out.println("For this date all time slots are available.");
+				    	System.out.println("Possible time slots are from 8h until 19h (rounded on the exact hour):");
+				    	wishedTimeSlot = sc.nextInt();
+				    	
+				    	while (wishedTimeSlot < 8 || wishedTimeSlot > 19) {
+				    		System.out.println("The time slot is not arount working hours. Please type again. ");
+							wishedTimeSlot = sc.nextInt();
+						} 
+				    }
+				    else {
+				    	/*Array of all taken time slots which are already occupied*/
+				    	int [] takenSlots = new int[9]; //maximal number of taken slots can be 9
+				    
+				    	for (int i = 0; i< lstReservationsForDate.size(); i++) {
+				    		takenSlots[i] = lstReservationsForDate.get(i).getTimeSlot();
+				    	}
+				    	
+				    	System.out.println("Which hour is good for you (rounded on the exact hour)?");
+				    	wishedTimeSlot = sc.nextInt();
+				    	
+				    	while (wishedTimeSlot < 8 || wishedTimeSlot > 19) {
+				    		System.out.println("The time slot is not arount working hours. Please type again. ");
+							wishedTimeSlot = sc.nextInt();
+				    	}		
+						boolean isThere = false;
+						for (int i = 0; i < takenSlots.length; i++) {
+							if (wishedTimeSlot == takenSlots[i]) {
+								isThere = true;
+								System.out.println("The time slot is already taken. Please type again. ");
+								wishedTimeSlot = sc.nextInt();
+								break;
+							}
+						} 
+						System.out.println("You reserved your time slot!");
+				    }
+			    }
+			    /*System.out.println("Haircut/Styling/Washing/Hair coloring/All: (H/S/W/C/A)");
+			    treatment = sc.next();
+			    System.out.println("Your name: ");
+			    customerName = sc.next();*/
+			    
+			    insertReservations(customerName, wishedTimeSlot,treatmentDate, treatment);
+			}
+			else { //call for canceling
+				System.out.println("======= CANCEL THE RESERVATION ========");
+				System.out.println("Which date are you canceling (in format yyyy-MM-dd) and which hour");
+				String cancelDate = sc.next();
+				int timeSlotCancelled = sc.nextInt();
+	
+				cancelReservations (cancelDate,timeSlotCancelled);
+				Date cancelReservationDate = formatter.parse(cancelDate);
+				for (int i = 0; i < waitingQueue.size(); i++) {
+					Reservation firstInQueue = waitingQueue.element();
+					
+					System.out.println("Dear " + firstInQueue.getCustomerName() + " ther is now one new time slot on date " + cancelDate);
+					System.out.println("The free tme slot is: " + timeSlotCancelled + " . Are you intereted (Y/N)?");
+					
+					if (sc.next().equalsIgnoreCase("Y")) {
+						waitingQueue.poll(); 			// retrieve and remove the first element
+						insertReservations(firstInQueue.customerName, timeSlotCancelled,cancelReservationDate, firstInQueue.getServiceType());
+					}	
+				}		
+			}
 			
 		} catch (ParseException e1) {
 			 //handle exception if date is not in "dd-MMM-yyyy" format
@@ -288,26 +314,50 @@ public class Main {
 
 				statement = conn.createStatement();
 				java.sql.Date sqlDate = java.sql.Date.valueOf( treatmentDate );
-			    String sql = "SELECT id_reservation, customer_name, reservation_date, time_slot, service_type, day_type  "
-			    		+ "FROM mydb.reservation WHERE reservation_date = '" + sqlDate + "'";
-			    rs = statement.executeQuery(sql);
 				
-			    while (rs.next()) {
-			    	res = new Reservation();
-	                res.setIdRreservation(rs.getInt(1));
-	                res.setCustomerName(rs.getString(2));
-	                res.setReservationDate(rs.getDate(3));
-	                res.setTimeSlot(rs.getInt(4));
-	              	res.setServiceType(rs.getString(5));
-	              	DayType dt = DayType.valueOf(rs.getString(6));
-	                res.setDayType(dt);
-	                //System.out.println();
-	                lstReservations.add(res);
-	            }
-			    
-			    /*for (int i = 0; i < lstReservations.size(); i++) {
-			    	System.out.println(lstReservations.get(i).getDayType());
-			    }*/
+				if (treatmentDate != null) {
+					
+				    String sql = "SELECT id_reservation, customer_name, reservation_date, time_slot, service_type, day_type  "
+				    		+ "FROM mydb.reservation WHERE reservation_date = '" + sqlDate + "'";
+				    rs = statement.executeQuery(sql);
+					
+				    while (rs.next()) {
+				    	res = new Reservation();
+		                res.setIdRreservation(rs.getInt(1));
+		                res.setCustomerName(rs.getString(2));
+		                res.setReservationDate(rs.getDate(3));
+		                res.setTimeSlot(rs.getInt(4));
+		              	res.setServiceType(rs.getString(5));
+		              	DayType dt = DayType.valueOf(rs.getString(6));
+		                res.setDayType(dt);
+		                //System.out.println();
+		                lstReservations.add(res);
+		            }
+				    
+				    /*for (int i = 0; i < lstReservations.size(); i++) {
+				    	System.out.println(lstReservations.get(i).getDayType());
+				    }*/
+				}
+				else {
+					
+					String sql = "SELECT id_reservation, customer_name, reservation_date, time_slot, service_type, day_type  "
+					    		+ "FROM mydb.reservation";
+					rs = statement.executeQuery(sql);
+						
+					while (rs.next()) {
+						res = new Reservation();
+		                res.setIdRreservation(rs.getInt(1));
+		                res.setCustomerName(rs.getString(2));
+		                res.setReservationDate(rs.getDate(3));
+		                res.setTimeSlot(rs.getInt(4));
+		              	res.setServiceType(rs.getString(5));
+		              	DayType dt = DayType.valueOf(rs.getString(6));
+		                res.setDayType(dt);
+		                //System.out.println();
+		                lstReservations.add(res);
+		           }
+					
+				}
 				
 			}
 		} catch (Exception e) {
@@ -333,6 +383,32 @@ public class Main {
 		return lstReservations;
 	}
 	
-
+	/*=========================CANCEL RESERVATIONS AND DELETE FROM TABLE=====================*/
+	public static void cancelReservations (String treatmentDate, int timeSlot) {
+		Statement statement = null;
+		ResultSet rs = null;
+		Connection conn = getConnection();
+		PreparedStatement preparedStatement = null;	
+		
+		try {
+			if (conn != null) {
+				java.sql.Date sqlDate = java.sql.Date.valueOf( treatmentDate);
+				
+			    String deleteSQL ="DELETE FROM mydb.reservation WHERE reservation_date = ? and timeSlot = ?";
+			    
+			    preparedStatement = conn.prepareStatement(deleteSQL);
+				preparedStatement.setObject(1, sqlDate);
+			    preparedStatement.setInt(2, timeSlot);
+			    
+			    int rowsDeleted = preparedStatement.executeUpdate();
+			    if (rowsDeleted > 0) {
+			        System.out.println("A reservation was deleted successfully!");
+			    }
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
 
